@@ -623,11 +623,21 @@ p.note {
   }
 }
 
-/* Pure white page background (light mode only). */
-@media (prefers-color-scheme: light) {
-  .page-white {
-    --bg: #fff;
-  }
+/* Pure white page, light palette in both color schemes. */
+.page-white {
+  --bg: #fff;
+  --fg: #151515;
+  --muted: #6b6b66;
+  --rule: #e4e4df;
+  --accent: #2f4fd8;
+  --pos: #1f9d55;
+  --mixed: #d4a300;
+  --neg: #d64545;
+  color-scheme: light;
+}
+
+:root:has(.page-white) {
+  color-scheme: light;
 }
 
 /* ---- Ambient background (home) ---- */
