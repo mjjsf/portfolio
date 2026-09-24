@@ -120,6 +120,10 @@ main {
   padding-top: clamp(3.5rem, 12vw, 7rem);
 }
 
+main:last-child {
+  padding-bottom: clamp(3rem, 10vw, 6rem);
+}
+
 h1,
 h2,
 h3 {
@@ -273,18 +277,6 @@ section {
 }
 
 /* ---- Project page ---- */
-
-.back {
-  display: inline-block;
-  font-size: var(--step--1);
-  color: var(--muted);
-  text-decoration: none;
-  margin-bottom: 2rem;
-}
-
-.back:hover {
-  color: var(--fg);
-}
 
 .prose {
   margin-top: clamp(2.5rem, 8vw, 4rem);
