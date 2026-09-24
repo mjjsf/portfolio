@@ -209,19 +209,21 @@ section {
 
 .work-list .title {
   grid-area: title;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .work-list .desc {
   grid-area: desc;
   color: var(--muted);
   font-size: 16px;
+  font-weight: 300;
 }
 
 .work-list .year {
   grid-area: year;
   font-family: var(--mono);
   font-size: var(--step--1);
+  font-weight: 300;
   color: var(--muted);
   align-self: center;
 }
