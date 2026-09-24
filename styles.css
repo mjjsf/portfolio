@@ -623,6 +623,75 @@ p.note {
   }
 }
 
+/* ---- Ambient background (home) ---- */
+
+/* Slow, drifting monochrome heat field. Peaks stay within ~5% of the page
+   tone so body and muted text keep their contrast. */
+.ambient {
+  --heat: color-mix(in srgb, var(--fg) 5%, var(--bg));
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient span {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--heat), transparent);
+  will-change: transform;
+  animation: drift-a 47s ease-in-out infinite alternate;
+}
+
+.ambient span:nth-child(1) {
+  top: -30vmax;
+  left: -20vmax;
+}
+
+.ambient span:nth-child(2) {
+  top: 10vh;
+  right: -35vmax;
+  animation-name: drift-b;
+  animation-duration: 61s;
+}
+
+.ambient span:nth-child(3) {
+  bottom: -40vmax;
+  left: 10vw;
+  animation-name: drift-c;
+  animation-duration: 79s;
+}
+
+/* Fine grain dithers the gradient so low-contrast steps don't band. */
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
+@keyframes drift-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(18vw, 22vh) scale(1.15); }
+  100% { transform: translate(6vw, 45vh) scale(0.9); }
+}
+
+@keyframes drift-b {
+  0%   { transform: translate(0, 0) scale(1.1); }
+  50%  { transform: translate(-22vw, 18vh) scale(0.9); }
+  100% { transform: translate(-10vw, -15vh) scale(1.2); }
+}
+
+@keyframes drift-c {
+  0%   { transform: translate(0, 0) scale(0.95); }
+  50%  { transform: translate(25vw, -30vh) scale(1.2); }
+  100% { transform: translate(-8vw, -12vh) scale(1); }
+}
+
 /* ---- Utilities ---- */
 
 .placeholder {
@@ -659,5 +728,9 @@ p.note {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+
+  .ambient span {
+    animation: none;
   }
 }
