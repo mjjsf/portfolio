@@ -291,8 +291,9 @@ section {
 }
 
 .prose h2 {
-  font-size: var(--step-0);
-  margin: 5em 0 0.75em;
+  font-size: calc(var(--step-0) * 1.5);
+  font-weight: 400;
+  margin: 3.333em 0 0.5em;
 }
 
 .prose figure {
