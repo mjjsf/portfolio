@@ -617,9 +617,16 @@ p.note {
 }
 
 @media (min-width: 40rem) {
-  .gallery {
+  .gallery:not(.stacked) {
     grid-template-columns: 1fr 1fr;
     align-items: start;
+  }
+}
+
+/* Pure white page background (light mode only). */
+@media (prefers-color-scheme: light) {
+  .page-white {
+    --bg: #fff;
   }
 }
 
