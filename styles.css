@@ -625,10 +625,10 @@ p.note {
 
 /* ---- Ambient background (home) ---- */
 
-/* Slow, drifting monochrome heat field. Peaks stay within ~5% of the page
-   tone so body and muted text keep their contrast. */
+/* A slow liquid flow drawn by assets/flow.js. --flow-amount is how far the
+   darkest eddies move from --bg toward --fg. */
 .ambient {
-  --heat: color-mix(in srgb, var(--fg) 5%, var(--bg));
+  --flow-amount: 0.11;
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -636,33 +636,29 @@ p.note {
   pointer-events: none;
 }
 
-.ambient span {
-  position: absolute;
-  width: 70vmax;
-  height: 70vmax;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, var(--heat), transparent);
-  will-change: transform;
-  animation: drift-a 47s ease-in-out infinite alternate;
+.ambient canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: blur(6px);
+  transform: scale(1.05);
 }
 
-.ambient span:nth-child(1) {
-  top: -30vmax;
-  left: -20vmax;
+/* Muted text and rules are nudged darker over the flow so they stay legible. */
+.ambient.has-flow ~ .wrap {
+  --muted: #5c5c57;
+  --rule: #cfcfca;
 }
 
-.ambient span:nth-child(2) {
-  top: 10vh;
-  right: -35vmax;
-  animation-name: drift-b;
-  animation-duration: 61s;
-}
+@media (prefers-color-scheme: dark) {
+  .ambient {
+    --flow-amount: 0.12;
+  }
 
-.ambient span:nth-child(3) {
-  bottom: -40vmax;
-  left: 10vw;
-  animation-name: drift-c;
-  animation-duration: 79s;
+  .ambient.has-flow ~ .wrap {
+    --muted: #9d9d96;
+    --rule: #3a3a37;
+  }
 }
 
 /* Fine grain dithers the gradient so low-contrast steps don't band. */
@@ -672,24 +668,6 @@ p.note {
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.05;
-}
-
-@keyframes drift-a {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(18vw, 22vh) scale(1.15); }
-  100% { transform: translate(6vw, 45vh) scale(0.9); }
-}
-
-@keyframes drift-b {
-  0%   { transform: translate(0, 0) scale(1.1); }
-  50%  { transform: translate(-22vw, 18vh) scale(0.9); }
-  100% { transform: translate(-10vw, -15vh) scale(1.2); }
-}
-
-@keyframes drift-c {
-  0%   { transform: translate(0, 0) scale(0.95); }
-  50%  { transform: translate(25vw, -30vh) scale(1.2); }
-  100% { transform: translate(-8vw, -12vh) scale(1); }
 }
 
 /* ---- Utilities ---- */
@@ -728,9 +706,5 @@ p.note {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
-  }
-
-  .ambient span {
-    animation: none;
   }
 }
