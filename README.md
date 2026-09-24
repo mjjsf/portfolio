@@ -1,6 +1,6 @@
 # portfolio
 
-Source for [micahjohnson.co](https://micahjohnson.co): a minimal, text-first portfolio in plain HTML and CSS. No build step and no JavaScript.
+Source for [micahjohnson.co](https://micahjohnson.co): a minimal, text-first portfolio in plain HTML and CSS. No build step; the only JavaScript is a small inline script on the homepage that copies the email address.
 
 ## Structure
 
