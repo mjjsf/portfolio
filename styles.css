@@ -18,7 +18,7 @@
   --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --step-2: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
 
-  --measure: 38rem;
+  --measure: 44rem;
   --gutter: clamp(1rem, 5vw, 3rem);
 
   color-scheme: light dark;
@@ -361,12 +361,6 @@ article > h1 {
   margin: 1.5rem 0;
 }
 
-@media (min-width: 40rem) {
-  .prose figure.wide {
-    margin-inline: calc(50% - min(26rem, 50vw - var(--gutter)));
-  }
-}
-
 .stat {
   font-size: var(--step-1);
   line-height: 1.4;
@@ -577,7 +571,6 @@ p.note {
   .gallery {
     grid-template-columns: 1fr 1fr;
     align-items: start;
-    margin-inline: calc(50% - min(26rem, 50vw - var(--gutter)));
   }
 }
 
