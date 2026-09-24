@@ -307,12 +307,6 @@ section {
   border-radius: 6px;
 }
 
-.prose figcaption {
-  font-size: var(--step--1);
-  color: var(--muted);
-  margin-top: 0.6rem;
-}
-
 .pager {
   display: flex;
   justify-content: space-between;
