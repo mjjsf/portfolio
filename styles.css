@@ -350,6 +350,7 @@ article > h1 {
   line-height: 1.4;
   color: var(--muted);
   margin-top: 0.75rem;
+  max-width: none;
 }
 
 .meta .note {
