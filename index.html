@@ -76,10 +76,11 @@
       <section id="contact" aria-labelledby="contact-h">
         <h2 id="contact-h" class="label">Contact</h2>
         <ul class="links">
-          <li><a href="mailto:hello@micahjohnson.co"><span class="placeholder">hello@micahjohnson.co</span></a></li>
-          <li><a href="https://www.linkedin.com/"><span class="placeholder">LinkedIn</span></a></li>
+          <li><a href="mailto:hello@micahjohnson.co" data-copy="hello@micahjohnson.co">hello@micahjohnson.co</a></li>
+          <li><a href="https://www.linkedin.com/in/mjjsf">LinkedIn</a></li>
           <li><a href="https://github.com/mjjsf">GitHub</a></li>
         </ul>
+        <p class="toast" role="status" aria-live="polite"></p>
       </section>
     </main>
 
@@ -88,5 +89,25 @@
       <a href="#">Back to top</a>
     </footer>
   </div>
+  <script>
+    (function () {
+      var toast = document.querySelector('.toast');
+      var timer;
+      document.querySelectorAll('[data-copy]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          if (!navigator.clipboard) return;
+          e.preventDefault();
+          navigator.clipboard.writeText(link.dataset.copy).then(function () {
+            toast.textContent = 'Copied to clipboard';
+            toast.classList.add('is-visible');
+            clearTimeout(timer);
+            timer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
+          }, function () {
+            window.location.href = link.href;
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
