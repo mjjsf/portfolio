@@ -601,45 +601,6 @@ p.note {
   transform: translate(-50%, 0);
 }
 
-/* ---- Dot cursor (see cursor.js) ---- */
-
-.has-cursor,
-.has-cursor * {
-  cursor: none !important;
-}
-
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  width: 0.125in;
-  height: 0.125in;
-  margin: -0.0625in 0 0 -0.0625in;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  background-color: #000;
-  transition: opacity 0.2s ease, background-color 0.3s ease;
-  will-change: transform;
-}
-
-.cursor.is-visible {
-  opacity: 1;
-}
-
-.cursor.is-pressed {
-  background-color: var(--accent);
-  transition: opacity 0.2s ease, background-color 0.08s ease;
-}
-
-/* Black would vanish on the dark background */
-@media (prefers-color-scheme: dark) {
-  .cursor:not(.is-pressed) {
-    background-color: var(--fg);
-  }
-}
-
 ::selection {
   background: var(--fg);
   color: var(--bg);
