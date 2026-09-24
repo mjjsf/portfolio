@@ -19,15 +19,14 @@
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
     'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
-    ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
+    ' for(int i=0;i<3;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*.75;',
     ' vec2 q=vec2(fbm(p+vec2(0.,.07*t)),fbm(p+vec2(5.2,1.3)-.05*t));',
-    ' vec2 s=vec2(fbm(p+3.5*q+vec2(1.7,9.2)+.04*t),fbm(p+3.5*q+vec2(8.3,2.8)-.03*t));',
-    ' float f=fbm(p+3.*s);',
-    // Fold the field into soft ribbons that read as moving liquid.
-    ' f=.5+.5*sin(f*9.-t*.15);',
-    ' f=smoothstep(.5,1.,f);',
+    ' vec2 s=vec2(fbm(p+2.*q+vec2(1.7,9.2)+.04*t),fbm(p+2.*q+vec2(8.3,2.8)-.03*t));',
+    ' float f=fbm(p+1.4*s);',
+    // Stretch the field into broad, soft pools of tone.
+    ' f=smoothstep(.3,.7,f);',
     ' gl_FragColor=vec4(mix(bg,ink,f*amt),1.);',
     '}'
   ].join('\n');
