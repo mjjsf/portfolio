@@ -1,6 +1,6 @@
 # portfolio
 
-Source for [micahjohnson.co](https://micahjohnson.co): a minimal, text-first portfolio in plain HTML and CSS. No build step; the only JavaScript is a small inline script on the homepage that copies the email address.
+Source for [micahjohnson.co](https://micahjohnson.co): a minimal, text-first portfolio in plain HTML and CSS. No build step. The only JavaScript is `cursor.js` (the custom cursor, on every page) and a small inline script on the homepage that copies the email address.
 
 ## Structure
 
@@ -8,6 +8,7 @@ Source for [micahjohnson.co](https://micahjohnson.co): a minimal, text-first por
 index.html              intro, selected work, about, contact
 work/<slug>/index.html  one page per project
 styles.css              the only stylesheet (tokens at the top, dark mode included)
+cursor.js               liquid glass cursor (mouse and trackpad only)
 assets/                 favicon and any project images
 404.html
 ```
