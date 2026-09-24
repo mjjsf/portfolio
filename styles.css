@@ -433,7 +433,6 @@ article > h1 {
 .data .group th {
   padding-top: 1.75rem;
   font-weight: 600;
-  border-bottom-color: var(--fg);
 }
 
 .data tbody:first-of-type .group th {
