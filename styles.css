@@ -10,8 +10,8 @@
   --mixed: #d4a300;
   --neg: #d64545;
 
-  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: var(--sans);
 
   --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.85rem);
   --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
@@ -55,7 +55,6 @@ body {
   font-family: var(--sans);
   font-size: var(--step-0);
   line-height: 1.6;
-  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
