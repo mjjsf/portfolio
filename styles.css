@@ -628,7 +628,7 @@ p.note {
 /* A slow liquid flow drawn by assets/flow.js. --flow-amount is how far the
    darkest eddies move from --bg toward --fg. */
 .ambient {
-  --flow-amount: 0.08;
+  --flow-amount: 0.1;
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -652,7 +652,7 @@ p.note {
 
 @media (prefers-color-scheme: dark) {
   .ambient {
-    --flow-amount: 0.09;
+    --flow-amount: 0.11;
   }
 
   .ambient.has-flow ~ .wrap {
