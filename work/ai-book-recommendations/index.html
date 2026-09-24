@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI book recommendations — Micah Johnson</title>
+  <meta name="description" content="Reading history + AI, built for privacy and trust. A Goodreads feature concept, from exploratory research through four iterations and usability testing.">
+  <link rel="canonical" href="https://micahjohnson.co/work/ai-book-recommendations/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="AI book recommendations — Micah Johnson">
+  <meta property="og:description" content="Reading history + AI, built for privacy and trust.">
+  <meta property="og:url" content="https://micahjohnson.co/work/ai-book-recommendations/">
+  <meta name="theme-color" content="#fafaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="name" href="../../">Micah Johnson</a>
+      <nav aria-label="Primary">
+        <a href="../../#work">Work</a>
+        <a href="../../#about">About</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <a class="back" href="../../#work">&larr; All work</a>
+        <h1>AI book recommendations</h1>
+        <p class="lede subtitle">Reading history + AI, built for privacy and trust.</p>
+        <dl class="meta">
+          <dt>Year</dt><dd>2026</dd>
+          <dt>Role</dt><dd>Product designer</dd>
+          <dt>Platform</dt><dd>Goodreads (concept)</dd>
+          <dt>Prototype</dt><dd><a href="https://mjjsf.github.io/book-rec/">mjjsf.github.io/book-rec</a> <span class="note">(made with Claude, desktop only)</span></dd>
+        </dl>
+
+        <div class="prose">
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/cover.webp" width="1600" height="1049" alt="A Goodreads-style chat panel. The reader asks for science fiction novels that have been made into movies, taking their reading history into account; the reply recommends Dungeon Crawler Carl and Project Hail Mary with ratings and Want to Read buttons.">
+          </figure>
+
+          <h2>The problem</h2>
+          <p class="stat"><strong>5 of 8</strong> readers find book recommendations hit-or-miss.</p>
+          <p>5 of 8 readers have trouble finding books they like, most often using social media (Goodreads, YouTube, TikTok) for recommendations, and AI chatbots (ChatGPT, Gemini) for more specific recommendations.</p>
+
+          <h2>User demographics</h2>
+          <p>Exploratory interviews revealed Goodreads as the most cited social media platform for online book-related activity, confirming it as a good platform to build for. Based on Goodreads traffic reports and largely similar survey respondent populations, the following parameters were made to create representative groups for subsequent randomized user testing panels of five participants:</p>
+          <dl class="meta spec">
+            <dt>Gender</dt><dd>3 women, 2 men</dd>
+            <dt>Age</dt><dd>18–24: 1 participant<br>25–35: 2 participants<br>35–44: 1 participant<br>45–54: 1 participant</dd>
+            <dt>Books per year</dt><dd>5–11 books: 1 participant<br>12–24 books: 3 participants<br>25–49 books: 1 participant</dd>
+            <dt>Country</dt><dd>USA</dd>
+            <dt>AI usage</dt><dd>Occasional to frequent</dd>
+            <dt>Reading</dt><dd>~90% fiction, ~10% nonfiction (genres varied)</dd>
+          </dl>
+
+          <h2>Constraints</h2>
+          <p>Exploratory research confirmed Goodreads as an appropriate platform for the build: it was the most cited platform for book activity, and it already has each user&rsquo;s reading history. Time and budget were limited.</p>
+
+          <h2>Exploratory research</h2>
+          <ol class="flow" aria-label="Research process">
+            <li>Screener survey</li>
+            <li>Participant selection</li>
+            <li>Video interviews</li>
+            <li>Synthesis</li>
+          </ol>
+          <p>A screener survey was built to assess demographics and behavior. A survey was chosen for speed, breadth and specificity.</p>
+          <p>Eight participants were selected to capture a broad array of reading volumes and styles, with some curve toward Goodreads user behaviors (shown in survey responses as a significantly used platform) and AI familiarity (as most respondents were frequent to occasional users of AI). The survey respondent population largely mirrored Goodreads demographics and behavior.</p>
+          <p>Video interviews were conducted to capture in-depth qualitative information. Findings are below.</p>
+
+          <div class="table-wrap">
+            <table class="data">
+              <caption>Interview findings (8 participants)</caption>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Book recommendations</th></tr>
+                <tr><td class="n">3/8</td><td>Goodreads, friends</td></tr>
+                <tr><td class="n">2/8</td><td>ChatGPT, Gemini, bookstores, StoryGraph, TikTok</td></tr>
+                <tr><td class="n">5/8</td><td>Recommendations hit-or-miss</td></tr>
+                <tr><td class="n">3/8</td><td>Social media trusted most for recommendations</td></tr>
+                <tr><td class="n">6/8</td><td>Use ChatGPT or Gemini when looking for something specific</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">AI trust</th></tr>
+                <tr><td class="n">3/8</td><td>Did not want personally identifying information shared with AI (including mood)</td></tr>
+                <tr><td class="n">1/8</td><td>Want to know data and confidentiality policies</td></tr>
+                <tr><td class="n">8/8</td><td>Open to sharing with AI</td></tr>
+                <tr><td class="n">2/8</td><td>Actively sharing reading history with AI</td></tr>
+                <tr><td class="n">2/8</td><td>Comfortable sharing around reading history</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Interest</th></tr>
+                <tr><td class="n">3/8</td><td>Emotion of books important</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Ideation</h2>
+          <ol class="flow" aria-label="Ideation process">
+            <li>Exploratory research findings</li>
+            <li>User stories (AI, then manual)</li>
+            <li>Core functions (taxonomy and object-action pairs)</li>
+          </ol>
+          <p>Exploratory research findings were elaborated into user stories to capture a breadth of scenarios, and then deconstructed into the core functionality required by users.</p>
+
+          <h2>Iteration 1: Taxonomy-based user flow</h2>
+          <p>A preliminary user flow leveraging the taxonomy was made into a clickable prototype with the aid of Claude, and was quickly deemed too complicated for general use.</p>
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/iteration-1-taxonomy.webp" width="1600" height="997" loading="lazy" alt="Wireframe flow of four screens: a search box with an Options link; expanded options with fields for storyline, emotion, referenced books, associated books, subject and genre; a list of recommendations; and a recommendation detail with an AI rationale.">
+            <figcaption>Search, search options, recommendations, and a single recommendation with its AI rationale.</figcaption>
+          </figure>
+
+          <h2>Iteration 2: Essentials</h2>
+          <p>For ease of use, the user flow was simplified to a basic prompting function. Any taxonomy would just surface naturally in the prompt.</p>
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/iteration-2-essentials.webp" width="1600" height="961" loading="lazy" alt="Two wireframe screens: a single text box asking &ldquo;Do you need help finding a book?&rdquo; with a Use reading history checkbox, leading to a list of recommendations with a box to refine the search.">
+            <figcaption>One prompt in, recommendations out, with an option to refine.</figcaption>
+          </figure>
+
+          <h2>Iteration 3: Chatbot for Goodreads</h2>
+          <p>The simplified user flow was elaborated as a Goodreads app feature and run through usability testing.</p>
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/iteration-3-chatbot.webp" width="1600" height="1121" loading="lazy" alt="Three Goodreads app screens: an empty prompt reading &ldquo;What kind of book are you looking for?&rdquo; with a Use my reading history toggle and AI details link; the prompt filled in with a request for recent sci-fi adapted into movies; and the AI&rsquo;s answer explaining its picks, starting with Dungeon Crawler Carl.">
+            <figcaption>The chatbot as a Goodreads feature, with reading history on by default and AI details one tap away.</figcaption>
+          </figure>
+
+          <p>The chatbot prototype was tested with 5 participants. Everyone reached the goal without error, and all participants liked using their reading history to get recommendations. Testing also revealed areas for improvement and a possible need for automatically populated recommendations (Iteration 4).</p>
+
+          <blockquote class="pull pos">
+            <p>&ldquo;I really hope this becomes a feature, that&rsquo;s my main thought. I&rsquo;d like to be able to use this.&rdquo;</p>
+            <footer>Majority sentiment, 4 of 5 participants</footer>
+          </blockquote>
+          <blockquote class="pull neg">
+            <p>&ldquo;Seems too complicated for average reader to pinpoint favorite genre, to think and to type.&rdquo;</p>
+            <footer>Minority sentiment, 1 of 5 participants</footer>
+          </blockquote>
+
+          <div class="table-wrap">
+            <table class="data">
+              <caption>Usability testing results (5 participants)</caption>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">First impression before using</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>5/5</td><td>Understand basic functionality</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>3/5</td><td>Mention reading history function specifically</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>2/5</td><td>Mention &ldquo;keywords&rdquo; to enter into input field</td></tr>
+                <tr><td class="n"><span class="dot neg"><span class="sr">negative</span></span>1/5</td><td>Wants multiple choice questions as filter</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Goal completion</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>5/5</td><td>Successfully receives and reviews all book recommendations</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Thoughts after using</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>4/5</td><td>Positive: &ldquo;Straightforward, pretty seamless, very interesting&rdquo;</td></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>1/5</td><td>Report difficulty finding recommendations on the existing Goodreads app</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>1/5</td><td>Wants more info: &ldquo;AI&rdquo; stated upfront, and curious how reading history works</td></tr>
+                <tr><td class="n"><span class="dot neg"><span class="sr">negative</span></span>1/5</td><td>Wants automatic recommendations based on reading history</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Desire to use product in future</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>4/5</td><td>Definitely want to use</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>2/5</td><td>Want recommendations from friends or influencers</td></tr>
+                <tr><td class="n"><span class="dot neg"><span class="sr">negative</span></span>1/5</td><td>Would not use, prefers to scroll feed</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Product safety</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>4/5</td><td>Felt safe</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>1/5</td><td>Wants disclosure data before feeling safe</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Product sentiment</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>4/5</td><td>Really like it</td></tr>
+                <tr><td class="n"><span class="dot neg"><span class="sr">negative</span></span>1/5</td><td>Seems too complicated</td></tr>
+              </tbody>
+              <tbody>
+                <tr class="group"><th colspan="2" scope="rowgroup">Reading history feature sentiment</th></tr>
+                <tr><td class="n"><span class="dot pos"><span class="sr">positive</span></span>5/5</td><td>Like leveraging reading history</td></tr>
+                <tr><td class="n"><span class="dot mixed"><span class="sr">neutral</span></span>1/5</td><td>Has questions about how it works</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>Iteration 4: Automatic variations</h2>
+          <p>One of the usability testing participants found thinking and typing to get recommendations too complicated. This pointed to developing several options that would pre-populate recommendations based on reading history, with and without the option to refine.</p>
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/iteration-4-automatic.webp" width="1600" height="1121" loading="lazy" alt="Two variations. One: a screen headed &ldquo;Based on your reading history, Goodreads AI recommends&rdquo; listing Dungeon Crawler Carl, Project Hail Mary and Annihilation, with a refine box below. Two: the Goodreads Discover feed with a highlighted &ldquo;Based on your reading history&rdquo; carousel of book covers.">
+            <figcaption>1. Recommendations from reading history, with a chatbot to refine them. 2. A recommendations carousel in the Discover feed.</figcaption>
+          </figure>
+
+          <h2>Next steps</h2>
+          <p>Incorporate business interests to define which options to pursue and test. Some possible routes are below. Separately, 2 of 5 interviewees mentioned wanting influencer recommendations, so that is a viable route to explore as well.</p>
+          <figure class="wide">
+            <img src="../../assets/ai-book-recommendations/next-steps.webp" width="1600" height="1092" loading="lazy" alt="Option A pairs the chatbot feature with a reading-history recommendations carousel in the Discover feed. Option B shows reading-history recommendations first, with a chatbot to refine the results.">
+            <figcaption>Option A: chatbot plus a recommendations carousel. Option B: recommendations from reading history, with a chatbot to refine.</figcaption>
+          </figure>
+        </div>
+
+        <nav class="pager" aria-label="More work">
+          <a class="next" href="../project-two/"><span>Next</span>Project Two</a>
+        </nav>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; 2026 Micah Johnson</span>
+      <a href="#">Back to top</a>
+    </footer>
+  </div>
+</body>
+</html>
