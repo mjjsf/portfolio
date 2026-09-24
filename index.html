@@ -45,7 +45,7 @@
             </a>
           </li>
           <li>
-            <a href="work/project-four/">
+            <a href="#" role="button" data-toast="Under NDA">
               <span class="title">Mercor</span>
               <span class="desc">AI evaluation for top lab</span>
               <span class="year">2025&ndash;2026</span>
@@ -93,15 +93,24 @@
     (function () {
       var toast = document.querySelector('.toast');
       var timer;
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        clearTimeout(timer);
+        timer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
+      }
+      document.querySelectorAll('[data-toast]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          showToast(link.dataset.toast);
+        });
+      });
       document.querySelectorAll('[data-copy]').forEach(function (link) {
         link.addEventListener('click', function (e) {
           if (!navigator.clipboard) return;
           e.preventDefault();
           navigator.clipboard.writeText(link.dataset.copy).then(function () {
-            toast.textContent = 'Copied to clipboard';
-            toast.classList.add('is-visible');
-            clearTimeout(timer);
-            timer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
+            showToast('Copied to clipboard');
           }, function () {
             window.location.href = link.href;
           });
