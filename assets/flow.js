@@ -26,7 +26,7 @@
     ' vec2 s=vec2(fbm(p+2.*q+vec2(1.7,9.2)+.04*t),fbm(p+2.*q+vec2(8.3,2.8)-.03*t));',
     ' float f=fbm(p+1.4*s);',
     // Stretch the field into broad, soft pools of tone.
-    ' f=smoothstep(.3,.7,f);',
+    ' f=smoothstep(.3,.58,f);',
     ' gl_FragColor=vec4(mix(bg,ink,f*amt),1.);',
     '}'
   ].join('\n');
