@@ -285,7 +285,7 @@ section {
 
 .work-list .desc {
   grid-area: desc;
-  color: color-mix(in srgb, var(--fg) 75%, var(--bg));
+  color: inherit;
   font-size: 16px;
   font-weight: 300;
 }
@@ -295,7 +295,7 @@ section {
   font-family: var(--mono);
   font-size: var(--step--1);
   font-weight: 300;
-  color: color-mix(in srgb, var(--fg) 75%, var(--bg));
+  color: inherit;
   align-self: center;
 }
 
