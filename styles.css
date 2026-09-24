@@ -292,7 +292,7 @@ section {
 
 .prose h2 {
   font-size: calc(var(--step-0) * 1.5);
-  font-weight: 400;
+  font-weight: 300;
   margin: 3.333em 0 0.5em;
 }
 
