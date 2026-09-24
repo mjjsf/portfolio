@@ -6,6 +6,8 @@
   var canvas = document.createElement('canvas');
   var gl = canvas.getContext('webgl', { alpha: false, antialias: false, depth: false });
   if (!gl) return;
+  // Size inline so a stale cached stylesheet can't leave it at intrinsic size.
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block';
   host.prepend(canvas);
   host.classList.add('has-flow');
 
