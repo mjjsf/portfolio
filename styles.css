@@ -646,7 +646,7 @@ p.note {
 /* Slowly drifting topographic contours drawn by assets/flow.js.
    --flow-amount is the opacity of the fine lines; index lines are double. */
 .ambient {
-  --flow-amount: 0.05;
+  --flow-amount: 0.06;
   position: fixed;
   inset: 0;
   z-index: -1;
