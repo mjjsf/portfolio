@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeHome — Micah Johnson</title>
+  <meta name="description" content="A web app that makes San Francisco&rsquo;s earthquake safety data accessible to the general public, designed from original research to MVP with SF Civic Tech.">
+  <link rel="canonical" href="https://micahjohnson.co/work/safehome/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="SafeHome — Micah Johnson">
+  <meta property="og:description" content="Making San Francisco&rsquo;s earthquake safety data accessible to the general public.">
+  <meta property="og:url" content="https://micahjohnson.co/work/safehome/">
+  <meta name="theme-color" content="#fafaf8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111110" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="name" href="../../">Micah Johnson</a>
+      <nav aria-label="Primary">
+        <a href="../../#work">Work</a>
+        <a href="../../#about">About</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <a class="back" href="../../#work">&larr; All work</a>
+        <h1>SafeHome</h1>
+        <p class="lede subtitle">Making San Francisco&rsquo;s earthquake safety data accessible to the general public.</p>
+        <dl class="meta">
+          <dt>Year</dt><dd>2025</dd>
+          <dt>For</dt><dd>SF Civic Tech (volunteer)</dd>
+          <dt>Role</dt><dd>Lead product designer: UX research, UX design, visual design and branding</dd>
+        </dl>
+
+        <div class="prose">
+          <figure class="wide">
+            <img src="../../assets/safehome/cover.webp" width="1600" height="1049" alt="The SafeHome web app on a laptop: a blue header asking &ldquo;How safe is your home in an earthquake?&rdquo; with an address search, above a map of San Francisco and hazard cards.">
+          </figure>
+
+          <h2>Summary</h2>
+          <p>In support of earthquake preparedness initiatives from the City of San Francisco, SafeHome makes <strong>obscure government earthquake safety data accessible to the general public</strong>, in addition to information on geological risks and preparedness resources. As lead product designer, I worked with engineering, data science, and product management to develop a web app from original research to MVP.</p>
+
+          <h2>The problem</h2>
+          <p>San Francisco is at risk for a major earthquake in the coming years, but public data around residential earthquake compliance and safety is currently hard to find and navigate.</p>
+          <ul class="stats" aria-label="San Francisco earthquake risk">
+            <li><strong>63%</strong> chance of a 6.7 magnitude earthquake in the next 30 years</li>
+            <li><strong>5,400</strong> residents in housing that is not earthquake-safe*</li>
+            <li><strong>400</strong> multifamily buildings not earthquake-safe*</li>
+          </ul>
+          <p class="note">* Estimated</p>
+
+          <h2>Understanding user needs</h2>
+          <p>While the original scope was to make local earthquake safety data easier to access, we wanted to check user needs and validate the idea. Budget constraints limited our research to surveys, yielding upwards of 50 responses, which both <strong>confirmed the original idea and highlighted these additional priorities</strong>:</p>
+          <ul>
+            <li>Address lookup with building, liquefaction, and tsunami safety information</li>
+            <li>General earthquake preparedness resources</li>
+            <li>Browsable earthquake safety map of San Francisco</li>
+            <li>Ability to share building safety report</li>
+            <li>Information on the project and its data sources</li>
+            <li>Clear, actionable, and reassuring stance around earthquake safety</li>
+          </ul>
+          <p>Competitive analysis revealed some similar tools targeted at more technical users, while also highlighting the need for an accessible option unified with preparedness resources.</p>
+
+          <h2>Exploring interface formats</h2>
+          <p>Given the user priorities, I considered several archetypal layouts, built with Chakra UI for speed and per the engineering team. The interface archetypes considered:</p>
+          <dl class="options">
+            <dt>Google Maps pattern</dt>
+            <dd>Map-focused, with a scrollable side panel. Although familiar to most users, this ended up putting too much emphasis on the map, when our research revealed that the hazard data was of higher priority to the user.</dd>
+            <dt>Portal with left navigation</dt>
+            <dd>Allowing for dedicated pages per data type. This was decided against since it would require additional interaction to use, possibly posing difficulty for those with screen readers and the less computer literate.</dd>
+            <dt>Single-page responsive dashboard <span class="chosen">Chosen</span></dt>
+            <dd>Prioritizing seismic risks and safety information. This was chosen because it would be easily accessible on all devices and for all user types (including those with screen readers), while also providing an easy, single-glance report after address lookup.</dd>
+          </dl>
+          <figure class="wide">
+            <img src="../../assets/safehome/archetypes-rejected.webp" width="1600" height="895" loading="lazy" alt="Two early layouts: a Google Maps pattern with a map and a scrollable side panel of hazard details, and a portal with left navigation giving each data type its own page.">
+            <figcaption>The Google Maps pattern and the portal with left navigation.</figcaption>
+          </figure>
+          <figure class="wide">
+            <img src="../../assets/safehome/archetypes-dashboard.webp" width="1600" height="1197" loading="lazy" alt="The single-page responsive dashboard: an address at the top, three hazard cards for soft story, seismic and tsunami risk, a map of San Francisco, and cards for preparedness, retrofit services and retrofit grants.">
+            <figcaption>The single-page responsive dashboard, the chosen direction.</figcaption>
+          </figure>
+
+          <h2>Defining user flows</h2>
+          <p>Once a layout was selected, I mapped easy ways for users to meet their needs.</p>
+          <figure class="wide">
+            <img src="../../assets/safehome/user-flows.webp" width="1600" height="888" loading="lazy" alt="Three user flows. Learn about building safety and resources: Home Screen, search address, Building Report and Resources. Share building report: Building Report and Resources, Share call to action, Share Report modal. Learn about project: Home Screen or Building Report, About call to action, About modal.">
+          </figure>
+          <p>Based on the user flows, three screen modes were identified as necessary:</p>
+          <ul>
+            <li><strong>Home screen:</strong> address lookup and branding</li>
+            <li><strong>Building report and resources</strong> (dashboard)</li>
+            <li><strong>Modals:</strong> supporting information</li>
+          </ul>
+          <figure class="wide">
+            <img src="../../assets/safehome/screen-modes.webp" width="1600" height="613" loading="lazy" alt="Wireframes of the three screen modes side by side: the home screen with address search, the building report and resources dashboard, and a modal over the dashboard.">
+            <figcaption>Home screen, building report and resources, and modal.</figcaption>
+          </figure>
+
+          <h2>Gathering stakeholder feedback</h2>
+          <p>Throughout the design process, collaboration with the product team led to further refinement and testing. The data science side wanted users to be able to <strong>browse the map without entering an address</strong>, prompting a redesign to a single page. Interest in the Google Maps pattern also resurfaced from the engineering side, prompting A/B testing, which confirmed the dashboard as the preferred format.</p>
+          <figure class="wide">
+            <img src="../../assets/safehome/stakeholder-redesign.webp" width="1600" height="1226" loading="lazy" alt="The A/B test designs: the dashboard layout with a &ldquo;Learn about your home&rsquo;s earthquake readiness&rdquo; header and browsable map, next to a Google Maps pattern version with the hazard cards stacked in a side panel.">
+            <figcaption>The dashboard and the Google Maps pattern, as A/B tested.</figcaption>
+          </figure>
+          <p>During early research, we realized liability could be a concern, so I recommended reaching out to the City of San Francisco for guidance on how to approach data transparency. After a meeting with the City, we fine-tuned the language to match the City&rsquo;s intent and give users a clearer understanding of how safety is being assessed.</p>
+          <figure class="wide">
+            <img src="../../assets/safehome/city-language.webp" width="1600" height="1177" loading="lazy" alt="The dashboard after the City meeting, headed &ldquo;Learn about your home&rsquo;s earthquake readiness. Supporting the City of San Francisco&rsquo;s initiative to increase the earthquake safety of its multifamily residences.&rdquo; Hazard cards label an address as non-compliant for soft story and not in the seismic or tsunami zones.">
+            <figcaption>Language refined to match the City&rsquo;s intent.</figcaption>
+          </figure>
+
+          <h2>Testing usability, visual design, and concept</h2>
+          <p>In collaboration with the team, I designed a script to guide testing for usability, get visual design feedback, and revalidate the concept in moderated interviews with San Francisco residents over Zoom. The product manager and another designer helped facilitate testing. A pilot test allowed further refinement of the testing script and materials.</p>
+          <ul class="stats" aria-label="Select user testing findings">
+            <li><strong>100%</strong> approved of product concept and visual</li>
+            <li><strong>83%</strong> would visit when changing residences</li>
+            <li><strong>83%</strong> had difficulty with the language</li>
+            <li><strong>50%</strong> had confusion with the map</li>
+          </ul>
+          <p>Based on the findings, I worked with the team to evaluate and prioritize <strong>several improvements, listed and illustrated below</strong>:</p>
+          <ul>
+            <li>Expand bottom three preparedness cards into a more approachable and useful content section</li>
+            <li>Solve for map confusion with a more visible legend</li>
+            <li>Add search button for clear call-to-action (not shown)</li>
+            <li>Reduce jargon and make language more approachable throughout</li>
+            <li>Introduce a new name (SafeHome) to allow for future expansions beyond earthquake safety</li>
+            <li>Visually differentiate Report page, while maintaining browsable map on Landing page (with no input required to browse)</li>
+          </ul>
+          <figure class="wide">
+            <img src="../../assets/safehome/improvements.webp" width="1600" height="1866" loading="lazy" alt="Final SafeHome designs. The landing page asks &ldquo;How safe is your home in an earthquake?&rdquo; with a map legend for soft story, liquefaction zones and tsunami zones. The report page for 375 Euclid Ave. shows risk badges. Both end with a &ldquo;How to be earthquake-ready&rdquo; section covering the lingo, planning ahead, retrofitting services and renters&rsquo; rights.">
+            <figcaption>The landing page and the report page after testing.</figcaption>
+          </figure>
+
+          <h2>Impact and learnings</h2>
+          <p>I led product design through MVP, with testing showing positive user sentiment and alignment with San Francisco government initiatives. As a public goodwill effort, sustained impact depends on factors beyond the design&mdash;organizational priorities, funding, and government adoption&mdash;and I came to see the absence of a business stakeholder as a meaningful constraint on the project&rsquo;s long-term potential.</p>
+          <p>Additionally, surfacing this data publicly calls attention to what I estimated to be at least $25MM in repairs on the part of property owners to get their buildings to code. I wondered if the project was ethical, as perhaps the City is handling this issue on its own, and publicly surfacing this data could create fear in tenants and possible vacancies in buildings. Also, the local government did not respond to our outreach for endorsement or further involvement with the project.</p>
+          <p>In retrospect, I&rsquo;d have used a more targeted, compensated research pool to sharpen findings.</p>
+        </div>
+
+        <nav class="pager" aria-label="More work">
+          <a class="prev" href="../ai-book-recommendations/"><span>Previous</span>AI book recommendations</a>
+          <a class="next" href="../first-republic-bank/"><span>Next</span>First Republic Bank</a>
+        </nav>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <span>&copy; 2026 Micah Johnson</span>
+      <a href="#">Back to top</a>
+    </footer>
+  </div>
+</body>
+</html>
