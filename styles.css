@@ -601,7 +601,7 @@ p.note {
   transform: translate(-50%, 0);
 }
 
-/* ---- Liquid glass cursor (see cursor.js) ---- */
+/* ---- Dot cursor (see cursor.js) ---- */
 
 .has-cursor,
 .has-cursor * {
@@ -613,27 +613,31 @@ p.note {
   top: 0;
   left: 0;
   z-index: 9999;
-  width: 0.375in;
-  height: 0.375in;
-  margin: -0.1875in 0 0 -0.1875in;
+  width: 0.125in;
+  height: 0.125in;
+  margin: -0.0625in 0 0 -0.0625in;
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  background-color: rgba(255, 255, 255, 0.18);
-  background-image: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 45%);
-  box-shadow:
-    inset 0 0 4px rgba(255, 255, 255, 0.7),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
-    0 1px 5px rgba(0, 0, 0, 0.18);
-  -webkit-backdrop-filter: blur(2px) saturate(160%);
-  backdrop-filter: blur(2px) saturate(160%);
-  transition: opacity 0.2s ease;
+  background-color: #000;
+  transition: opacity 0.2s ease, background-color 0.3s ease;
   will-change: transform;
 }
 
 .cursor.is-visible {
   opacity: 1;
+}
+
+.cursor.is-pressed {
+  background-color: var(--accent);
+  transition: opacity 0.2s ease, background-color 0.08s ease;
+}
+
+/* Black would vanish on the dark background */
+@media (prefers-color-scheme: dark) {
+  .cursor:not(.is-pressed) {
+    background-color: var(--fg);
+  }
 }
 
 ::selection {
