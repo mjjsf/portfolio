@@ -215,6 +215,7 @@ section {
 .work-list .desc {
   grid-area: desc;
   color: var(--muted);
+  font-size: 16px;
 }
 
 .work-list .year {
