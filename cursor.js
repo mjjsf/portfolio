@@ -1,6 +1,6 @@
-// Liquid glass cursor: a cyan-tinted glass circle that follows the pointer
-// and fades to magenta over interactive elements and while the mouse button
-// is held. Mouse/trackpad only.
+// Liquid glass cursor: a clear white glass circle that follows the pointer
+// and squishes on press, springing back with a little wobble on release.
+// Mouse/trackpad only.
 (function () {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
@@ -10,29 +10,66 @@
   document.body.appendChild(dot);
   document.documentElement.classList.add('has-cursor');
 
-  var releaseTimer;
-  var interactive = 'a, button, [role="button"], input, select, textarea, label, summary';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Damped spring driving the scale: underdamped so release overshoots and settles.
+  var STIFFNESS = 600;
+  var DAMPING = 18;
+  var PRESSED_SCALE = 0.75;
+
+  var x = 0, y = 0;
+  var scale = 1, velocity = 0, target = 1;
+  var lastTime = 0, frame = 0;
+
+  function render() {
+    dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) scale(' + scale + ')';
+  }
+
+  function step(now) {
+    // Clamp dt so a backgrounded tab doesn't blow up the integration.
+    var dt = Math.min((now - lastTime) / 1000, 1 / 30);
+    lastTime = now;
+    velocity += (-STIFFNESS * (scale - target) - DAMPING * velocity) * dt;
+    scale += velocity * dt;
+    if (Math.abs(scale - target) < 0.001 && Math.abs(velocity) < 0.01) {
+      scale = target;
+      velocity = 0;
+      frame = 0;
+    } else {
+      frame = requestAnimationFrame(step);
+    }
+    render();
+  }
+
+  function setTarget(value) {
+    target = value;
+    if (reduceMotion.matches) {
+      scale = target;
+      velocity = 0;
+      render();
+      return;
+    }
+    if (!frame) {
+      lastTime = performance.now();
+      frame = requestAnimationFrame(step);
+    }
+  }
 
   document.addEventListener('pointermove', function (e) {
     if (e.pointerType !== 'mouse') return;
-    dot.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+    x = e.clientX;
+    y = e.clientY;
+    render();
     dot.classList.add('is-visible');
-  });
-
-  document.addEventListener('pointerover', function (e) {
-    if (e.pointerType !== 'mouse') return;
-    dot.classList.toggle('is-hover', !!(e.target.closest && e.target.closest(interactive)));
   });
 
   document.addEventListener('pointerdown', function (e) {
     if (e.pointerType !== 'mouse') return;
-    clearTimeout(releaseTimer);
-    dot.classList.add('is-pressed');
+    setTarget(PRESSED_SCALE);
   });
 
   document.addEventListener('pointerup', function () {
-    // Hold the magenta briefly so a quick click still shows it.
-    releaseTimer = setTimeout(function () { dot.classList.remove('is-pressed'); }, 250);
+    setTarget(1);
   });
 
   document.documentElement.addEventListener('mouseleave', function () {
