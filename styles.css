@@ -77,7 +77,8 @@ body {
 }
 
 .site-header .name {
-  font-weight: 600;
+  font-size: 1.5em;
+  font-weight: 200;
   text-decoration: none;
   color: var(--fg);
 }
