@@ -29,7 +29,7 @@
     ' float d=abs(fract(v-.5)-.5);',
     ' float line=1.-smoothstep(0.,fwidth(v)*1.1,d);',
     ' float major=step(mod(floor(v+.5),4.),.5);',
-    ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.2,2.,major)),1.);',
+    ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.25,2.,major)),1.);',
     '}'
   ].join('\n');
 
