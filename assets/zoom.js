@@ -31,6 +31,10 @@
     img.style.top = rect.top + 'px';
     img.style.width = rect.width + 'px';
     img.style.height = rect.height + 'px';
+    // Match corners that are rounded in the image file itself (radius in source pixels),
+    // so the shadow doesn't show through the transparent corners.
+    var radius = parseFloat(link.getAttribute('data-zoom-radius'));
+    if (radius) img.style.borderRadius = (radius * rect.width / natW) + 'px';
     layer.appendChild(img);
     document.body.appendChild(layer);
 
