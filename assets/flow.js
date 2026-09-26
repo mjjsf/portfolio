@@ -71,7 +71,8 @@
     gl.uniform1f(u.amt, parseFloat(cs.getPropertyValue('--flow-amount')) || 0.07);
   }
 
-  // Full device resolution (capped) so the hairlines stay crisp.
+  // Full device resolution (capped) so the hairlines stay crisp. Returns true
+  // when the backing store changed, which clears it (to black, as alpha is off).
   function resize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var w = Math.max(1, Math.round(innerWidth * dpr));
@@ -81,7 +82,9 @@
       canvas.height = h;
       gl.viewport(0, 0, w, h);
       gl.uniform2f(u.r, w, h);
+      return true;
     }
+    return false;
   }
 
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -108,7 +111,9 @@
     else raf = requestAnimationFrame(loop);
   }
 
-  addEventListener('resize', function () { resize(); if (reduce.matches) draw(performance.now()); });
+  // Redraw in the same frame as the resize; waiting for the throttled loop
+  // lets the cleared buffer show as a black flash while dragging the window.
+  addEventListener('resize', function () { if (resize()) draw(performance.now()); });
   [reduce, dark].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener('change', run);
   });
