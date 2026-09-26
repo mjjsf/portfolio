@@ -29,6 +29,7 @@
     ' float d=abs(fract(v-.5)-.5);',
     ' float line=1.-smoothstep(0.,fwidth(v)*1.1,d);',
     ' float major=step(mod(floor(v+.5),4.),.5);',
+    // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
     ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.,1.4,major)),1.);',
     '}'
   ].join('\n');
