@@ -655,6 +655,13 @@ p.note {
   pointer-events: none;
 }
 
+/* The home page keeps the lighter ground behind the contours. */
+@media (prefers-color-scheme: light) {
+  :root:has(.ambient) {
+    --bg: #fafaf8;
+  }
+}
+
 /* Rules are nudged darker so row dividers read apart from the contours. */
 .ambient.has-flow ~ .wrap {
   --rule: #d6d6d1;
