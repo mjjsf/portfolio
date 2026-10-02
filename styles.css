@@ -218,6 +218,18 @@ h1 {
 }
 
 /* 404 page */
+/* Fill the viewport so the footer sits at the bottom of short pages. */
+.wrap-fill {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.wrap-fill main {
+  flex: 1;
+}
+
 .return-home {
   display: inline-block;
   margin-top: 1rem;
