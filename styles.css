@@ -230,6 +230,11 @@ h1 {
   flex: 1;
 }
 
+/* Drop the message one line lower than the default main offset. */
+.wrap-fill .lede {
+  margin-top: 1lh;
+}
+
 .return-home {
   display: inline-block;
   margin-top: 1rem;
