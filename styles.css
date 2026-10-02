@@ -217,6 +217,24 @@ h1 {
   color: var(--muted);
 }
 
+/* 404 page */
+.return-home {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5em 1.25em;
+  border-radius: 999px;
+  background: #000;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.return-home:hover {
+  color: #fff;
+  opacity: 0.85;
+}
+
 p {
   margin: 0 0 1.1em;
 }
