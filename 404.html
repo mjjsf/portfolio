@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;1,400&display=swap">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css?v=10">
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -47,10 +47,38 @@
       <a class="return-home" href="/">Back to home</a>
     </main>
 
-    <footer class="site-footer">
+    <footer class="site-footer" id="contact">
+      <ul class="links">
+        <li><a href="mailto:hello@micahjohnson.co" data-copy="hello@micahjohnson.co">hello@micahjohnson.co</a></li>
+        <li><a href="https://www.linkedin.com/in/mjjsf">LinkedIn</a></li>
+      </ul>
       <span>All rights reserved</span>
     </footer>
+    <p class="toast" role="status" aria-live="polite"></p>
   </div>
+  <script>
+    (function () {
+      var toast = document.querySelector('.toast');
+      var timer;
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('is-visible');
+        clearTimeout(timer);
+        timer = setTimeout(function () { toast.classList.remove('is-visible'); }, 2000);
+      }
+      document.querySelectorAll('[data-copy]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          if (!navigator.clipboard) return;
+          e.preventDefault();
+          navigator.clipboard.writeText(link.dataset.copy).then(function () {
+            showToast('Copied to clipboard');
+          }, function () {
+            window.location.href = link.href;
+          });
+        });
+      });
+    })();
+  </script>
   <script src="/assets/menu.js"></script>
   <script src="/assets/flow.js?v=7"></script>
 </body>
