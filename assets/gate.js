@@ -25,9 +25,11 @@
       '<div class="ambient" aria-hidden="true"></div>' +
       '<form class="gate-form" novalidate>' +
       '<label class="sr" for="gate-pw">Password</label>' +
-      '<input id="gate-pw" class="gate-input" type="password" placeholder="Password" autocomplete="current-password" required>' +
-      '<button type="submit" class="btn btn-primary">Continue</button>' +
+      '<input id="gate-pw" class="gate-input" type="password" placeholder="Enter password" autocomplete="current-password" required>' +
+      '<div class="gate-actions">' +
       '<a class="btn btn-secondary" href="' + home + '">Return to home</a>' +
+      '<button type="submit" class="btn btn-primary">Continue</button>' +
+      '</div>' +
       '<p class="sr" role="status" aria-live="polite"></p>' +
       '</form>';
     document.body.prepend(gate);

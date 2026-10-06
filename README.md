@@ -31,7 +31,7 @@ python3 -m http.server 8000
 Add this line to the project page's `<head>`, after the stylesheet:
 
 ```html
-<script src="../../assets/gate.js?v=1"></script>
+<script src="../../assets/gate.js?v=2"></script>
 ```
 
 Visitors see a password screen (over the homepage's animated background) until they enter the password. The default password is set in `assets/gate.js`. Use `data-password="…"` on the tag to give one page a different password, and `data-home="…"` to change where "Return to home" goes. After one correct entry, every page with the same password stays unlocked for the rest of that browser tab's session. To remove protection, delete the line.
