@@ -779,6 +779,13 @@ html.is-arriving .wrap {
   animation: fade-in 0.6s ease backwards;
 }
 
+/* Gate to home: one cross-fade between the pages (gate.js, index.html). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.6s;
+  animation-timing-function: ease;
+}
+
 html.is-locked .wrap {
   visibility: hidden;
   opacity: 0;

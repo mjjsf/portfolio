@@ -24,15 +24,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;1,400&display=swap">
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=14">
+  <style>@view-transition { navigation: auto; }</style>
   <script>
-    // Returning from the password gate: fade in like the gate faded out.
-    try {
-      if (sessionStorage.getItem('gate-fade')) {
+    // Returning from the password gate: the browser cross-fades the gate into
+    // this page where it can; otherwise fade in like the gate faded out.
+    // Every other arrival stays instant.
+    (function () {
+      var fromGate = false;
+      try {
+        fromGate = !!sessionStorage.getItem('gate-fade');
         sessionStorage.removeItem('gate-fade');
+      } catch (e) {}
+      addEventListener('pagereveal', function (e) {
+        if (e.viewTransition && !fromGate) e.viewTransition.skipTransition();
+      });
+      if (fromGate && !('CSSViewTransitionRule' in window)) {
         document.documentElement.classList.add('is-arriving');
       }
-    } catch (e) {}
+    })();
   </script>
 </head>
 <body>
