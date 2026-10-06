@@ -797,6 +797,14 @@ html.is-unlocking .wrap {
   transition: opacity 0.6s ease;
 }
 
+/* Fade the ground to the page's own colour with the content (gate.js sets
+   --unlock-bg), so nothing snaps when the lock comes off. */
+html.is-unlocking,
+html.is-unlocking body {
+  background-color: var(--unlock-bg);
+  transition: background-color 0.6s ease;
+}
+
 html.is-unlocking .gate,
 html.is-leaving .gate {
   opacity: 0;
