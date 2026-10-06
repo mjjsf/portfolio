@@ -753,6 +753,32 @@ p.note {
   }
 }
 
+/* Paint the gate's ground from the first frame, before the overlay exists,
+   so the page's own (e.g. white) background never flashes. */
+html.is-locked,
+html.is-locked body {
+  background: #fafaf8;
+}
+
+@media (prefers-color-scheme: dark) {
+  html.is-locked,
+  html.is-locked body {
+    background: #111110;
+  }
+}
+
+/* Fade the gate in on arrival, and home in on return from the gate.
+   Backwards fill only, so the opacity transitions below still apply. */
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
+.gate,
+html.is-arriving .ambient,
+html.is-arriving .wrap {
+  animation: fade-in 0.6s ease backwards;
+}
+
 html.is-locked .wrap {
   visibility: hidden;
   opacity: 0;
@@ -880,6 +906,9 @@ html.is-leaving .gate {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .gate,
+  html.is-arriving .ambient,
+  html.is-arriving .wrap,
   .gate-input.is-shaking {
     animation: none;
   }
