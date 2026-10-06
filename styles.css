@@ -830,7 +830,8 @@ html.is-leaving .gate {
   text-align: left;
   background: #fff;
   color: #151515;
-  border-color: #d6d6d1;
+  /* Mid grey: soft, but over 3:1 against the field and the ground. */
+  border-color: #878782;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -841,7 +842,7 @@ html.is-leaving .gate {
 }
 
 .gate-input:focus-visible {
-  border-color: #151515;
+  border-color: #6b6b66;
 }
 
 .gate-actions {
@@ -870,6 +871,7 @@ html.is-leaving .gate {
 .btn-secondary {
   background: #fff;
   color: #000;
+  border-color: #878782;
 }
 
 .btn:hover {
@@ -882,8 +884,13 @@ html.is-leaving .gate {
 }
 
 @media (prefers-color-scheme: dark) {
-  .gate-input {
-    border-color: #fff;
+  .gate-input,
+  .btn-secondary {
+    border-color: #75756f;
+  }
+
+  .gate-input:focus-visible {
+    border-color: #a0a09a;
   }
 
   .btn-primary {
@@ -895,7 +902,6 @@ html.is-leaving .gate {
   .btn-secondary {
     background: transparent;
     color: #fff;
-    border-color: #fff;
   }
 }
 
