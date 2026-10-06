@@ -1,5 +1,5 @@
 // Password gate for a case study. Load synchronously in <head>:
-//   <script src="../../assets/gate.js?v=3"></script>
+//   <script src="../../assets/gate.js?v=4"></script>
 // Optional: data-password="…" (default below), data-home="…" (default: site root).
 // The password is asked for on every visit; nothing is remembered.
 // A deterrent only; the page source is still readable.
@@ -60,6 +60,22 @@
       setTimeout(go, ms);
     }
 
+    // Fade the gate out, then go home; home fades in (see index.html).
+    function leave() {
+      input.disabled = true;
+      root.classList.add('is-leaving');
+      after(gate, 'transitionend', 700, function () {
+        try { sessionStorage.setItem('gate-fade', '1'); } catch (e) {}
+        window.location.href = home;
+      });
+    }
+
+    gate.querySelector('.btn-secondary').addEventListener('click', function (e) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      leave();
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (input.value === password) {
@@ -80,12 +96,7 @@
       status.textContent = failures >= 2 ? 'Incorrect password. Returning home.' : 'Incorrect password';
       if (failures >= 2) {
         input.disabled = true;
-        after(input, 'animationend', 500, function () {
-          root.classList.add('is-leaving');
-          after(gate, 'transitionend', 700, function () {
-            window.location.href = home;
-          });
-        });
+        after(input, 'animationend', 500, leave);
       }
     });
   });
