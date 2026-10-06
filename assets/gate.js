@@ -1,19 +1,21 @@
 // Password gate for a case study. Load synchronously in <head>:
-//   <script src="../../assets/gate.js?v=1"></script>
+//   <script src="../../assets/gate.js?v=3"></script>
 // Optional: data-password="…" (default below), data-home="…" (default: site root).
+// The password is asked for on every visit; nothing is remembered.
 // A deterrent only; the page source is still readable.
 (function () {
   var script = document.currentScript;
   var password = script.getAttribute('data-password') || 'hello2027';
   var assets = new URL('./', script.src);
   var home = script.getAttribute('data-home') || new URL('../', assets).href;
-  var key = 'gate:' + password;
   var root = document.documentElement;
 
-  try {
-    if (sessionStorage.getItem(key) === '1') return;
-  } catch (e) {}
   root.classList.add('is-locked');
+
+  // Back/forward cache would restore an unlocked (or half-faded) page; start over.
+  addEventListener('pageshow', function (e) {
+    if (e.persisted) location.reload();
+  });
 
   document.addEventListener('DOMContentLoaded', function () {
     var gate = document.createElement('div');
@@ -61,7 +63,6 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (input.value === password) {
-        try { sessionStorage.setItem(key, '1'); } catch (err) {}
         input.blur();
         root.classList.add('is-unlocking');
         after(gate, 'transitionend', 700, function () {
