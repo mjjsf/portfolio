@@ -1,5 +1,5 @@
 // Password gate for a case study. Load synchronously in <head>:
-//   <script src="../../assets/gate.js?v=4"></script>
+//   <script src="../../assets/gate.js?v=5"></script>
 // Optional: data-password="…" (default below), data-home="…" (default: site root).
 // The password is asked for on every visit; nothing is remembered.
 // A deterrent only; the page source is still readable.
@@ -11,6 +11,19 @@
   var root = document.documentElement;
 
   root.classList.add('is-locked');
+
+  // Leaving for home cross-fades the two pages where the browser supports
+  // cross-document view transitions (home opts in too); arriving does not.
+  var crossFade = 'CSSViewTransitionRule' in window &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (crossFade) {
+    var opt = document.createElement('style');
+    opt.textContent = '@view-transition { navigation: auto; }';
+    document.head.appendChild(opt);
+  }
+  addEventListener('pagereveal', function (e) {
+    if (e.viewTransition) e.viewTransition.skipTransition();
+  });
 
   // Back/forward cache would restore an unlocked (or half-faded) page; start over.
   addEventListener('pageshow', function (e) {
@@ -60,12 +73,17 @@
       setTimeout(go, ms);
     }
 
-    // Fade the gate out, then go home; home fades in (see index.html).
+    // Go home in one cross-fade; otherwise fade the gate out and let home
+    // fade in (see index.html).
     function leave() {
       input.disabled = true;
+      try { sessionStorage.setItem('gate-fade', '1'); } catch (e) {}
+      if (crossFade) {
+        window.location.href = home;
+        return;
+      }
       root.classList.add('is-leaving');
       after(gate, 'transitionend', 700, function () {
-        try { sessionStorage.setItem('gate-fade', '1'); } catch (e) {}
         window.location.href = home;
       });
     }
