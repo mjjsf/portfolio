@@ -722,6 +722,157 @@ p.note {
   }
 }
 
+/* ---- Password gate (assets/gate.js) ---- */
+
+/* Full-screen overlay with the home page's palette and contours, whatever
+   the palette of the page underneath. */
+.gate {
+  --bg: #fafaf8;
+  --fg: #151515;
+  --muted: #6b6b66;
+  --rule: #d6d6d1;
+  --accent: #2f4fd8;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: var(--bg);
+  color: var(--fg);
+  transition: opacity 0.6s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .gate {
+    --bg: #111110;
+    --fg: #ecece8;
+    --muted: #93938c;
+    --rule: #353533;
+    --accent: #8ea2ff;
+  }
+}
+
+html.is-locked .wrap {
+  visibility: hidden;
+  opacity: 0;
+}
+
+html.is-unlocking .wrap {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+html.is-unlocking .gate,
+html.is-leaving .gate {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(100%, 20rem);
+  margin: 0;
+}
+
+.gate-input,
+.btn {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.75em 1.25em;
+  border: 1px solid #000;
+  border-radius: 999px;
+  font-family: var(--sans);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.gate-input {
+  /* 16px keeps iOS from zooming in on focus. */
+  font-size: 16px;
+  background: #fff;
+  color: #151515;
+  border-color: #d6d6d1;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.gate-input::placeholder {
+  color: #93938c;
+}
+
+.gate-input:focus-visible {
+  border-color: #151515;
+}
+
+.btn {
+  font-size: clamp(14px, 13px + 0.2vw, 15px);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #000;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .gate-input {
+    border-color: #fff;
+  }
+
+  .btn-primary {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+  }
+}
+
+.gate-input.is-shaking {
+  animation: gate-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes gate-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px); }
+  32% { transform: translateX(7px); }
+  50% { transform: translateX(-5px); }
+  68% { transform: translateX(3px); }
+  84% { transform: translateX(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-input.is-shaking {
+    animation: none;
+  }
+}
+
 /* ---- Utilities ---- */
 
 .placeholder {
