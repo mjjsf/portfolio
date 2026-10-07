@@ -308,6 +308,10 @@ section {
   --logo-h: 28px;
   --logo-gap: 36px;
   overflow: hidden;
+  /* Logos are decorative here: no selecting, dragging or long-press menu. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
   mask-image: linear-gradient(to right, transparent, #000 1.5rem, #000 calc(100% - 1.5rem), transparent);
 }
@@ -352,6 +356,8 @@ section {
   opacity: 0.42;
   /* Optional per-logo vertical nudge, set inline as --logo-y. */
   translate: 0 var(--logo-y, 0);
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 @media (prefers-color-scheme: dark) {
