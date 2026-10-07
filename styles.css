@@ -405,7 +405,7 @@ section {
 
 .work-list .title {
   grid-area: title;
-  font-weight: 400;
+  font-weight: 300;
 }
 
 .work-list .desc {
