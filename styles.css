@@ -331,15 +331,19 @@ section {
   width: max-content;
 }
 
+/* Moved by assets/marquee.js: drifts left, pauses on hover, drags to scrub.
+   pan-y keeps vertical page scrolling on touch while horizontal swipes drag. */
 .marquee-track.is-moving {
-  animation: marquee var(--marquee-duration, 30s) linear infinite;
   will-change: transform;
 }
 
-@keyframes marquee {
-  to {
-    transform: translateX(calc(-1 * var(--set-w)));
-  }
+.marquee.is-draggable {
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.marquee.is-dragging {
+  cursor: grabbing;
 }
 
 .marquee-set {
@@ -374,12 +378,6 @@ section {
   .marquee img {
     filter: brightness(0) invert(1);
     opacity: 0.5;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track.is-moving {
-    animation: none;
   }
 }
 
