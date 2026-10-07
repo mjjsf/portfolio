@@ -98,7 +98,6 @@
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
   function loop(now) {
-    if (!canvas.isConnected) return; // host removed (e.g. password gate dismissed)
     raf = requestAnimationFrame(loop);
     if (now - last < 33) return; // ~30fps is plenty for slow drift
     last = now;
@@ -106,7 +105,6 @@
   }
   function run() {
     cancelAnimationFrame(raf);
-    if (!canvas.isConnected) return;
     resize();
     readColors();
     if (reduce.matches) draw(performance.now());
@@ -115,7 +113,7 @@
 
   // Redraw in the same frame as the resize; waiting for the throttled loop
   // lets the cleared buffer show as a black flash while dragging the window.
-  addEventListener('resize', function () { if (canvas.isConnected && resize()) draw(performance.now()); });
+  addEventListener('resize', function () { if (resize()) draw(performance.now()); });
   [reduce, dark].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener('change', run);
   });

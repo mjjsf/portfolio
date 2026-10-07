@@ -24,35 +24,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;1,400&display=swap">
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=17">
   <link rel="prefetch" href="work/design-for-ai/">
-  <link rel="prefetch" href="assets/gate.js?v=6">
-  <script>
-    // Returning from the password gate: the browser cross-fades the gate into
-    // this page where it can; otherwise fade in like the gate faded out.
-    // Every other arrival and departure stays instant: the page only opts in
-    // to view transitions for that one arrival, so the browser never stops
-    // to snapshot it on the way out.
-    (function () {
-      var fromGate = false;
-      try {
-        fromGate = !!sessionStorage.getItem('gate-fade');
-        sessionStorage.removeItem('gate-fade');
-      } catch (e) {}
-      if (!fromGate) return;
-      if (!('CSSViewTransitionRule' in window)) {
-        document.documentElement.classList.add('is-arriving');
-        return;
-      }
-      var opt = document.createElement('style');
-      opt.textContent = '@view-transition { navigation: auto; }';
-      document.head.appendChild(opt);
-      addEventListener('pagereveal', function (e) {
-        if (e.viewTransition) e.viewTransition.finished.finally(function () { opt.remove(); });
-        else opt.remove();
-      }, { once: true });
-    })();
-  </script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -150,6 +123,6 @@
     })();
   </script>
   <script src="assets/menu.js"></script>
-  <script src="assets/flow.js?v=8"></script>
+  <script src="assets/flow.js?v=9"></script>
 </body>
 </html>
