@@ -415,7 +415,8 @@ section {
 .work-list .desc {
   grid-area: desc;
   color: inherit;
-  font-size: 16px;
+  /* 15px on desktop, easing to 14px on phones. */
+  font-size: clamp(14px, 13px + 0.2vw, 15px);
   font-weight: 300;
 }
 
