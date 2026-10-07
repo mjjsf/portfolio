@@ -350,6 +350,8 @@ section {
   height: var(--logo-h);
   filter: brightness(0);
   opacity: 0.42;
+  /* Optional per-logo vertical nudge, set inline as --logo-y. */
+  translate: 0 var(--logo-y, 0);
 }
 
 @media (prefers-color-scheme: dark) {

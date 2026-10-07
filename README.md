@@ -33,7 +33,7 @@ python3 -m http.server 8000
 1. Save the SVG to `assets/logos/` with the next number, e.g. `6-acme.svg`. Crop the viewBox tight to the artwork; any colour works, it is tinted in CSS.
 2. Add `<li><img src="assets/logos/6-acme.svg" alt="Acme"></li>` to the end of `.marquee-set` in `index.html`.
 
-Logos are sized automatically so wide wordmarks and compact marks read at a similar weight, and the scroll speed stays the same however many there are. If one still looks too heavy or light, nudge it with `data-scale` on the `<img>` (e.g. `data-scale="0.8"`).
+Logos are sized automatically so wide wordmarks and compact marks read at a similar weight, and the scroll speed stays the same however many there are. If one still looks too heavy or light, nudge it with `data-scale` on the `<img>` (e.g. `data-scale="0.8"`). If one sits too high or low, shift it with `style="--logo-y: 4px"` (positive moves it down).
 
 ## Placeholder content
 
