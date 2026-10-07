@@ -306,6 +306,10 @@ section {
   margin-top: clamp(4rem, 12vw, 7rem);
 }
 
+#about {
+  font-weight: 300;
+}
+
 /* ---- Logo marquee (home) ---- */
 
 /* Logos are sized and repeated by assets/marquee.js. Every item carries the
