@@ -2,7 +2,7 @@
 // wordmarks shorter, compact marks taller) and the set is repeated until it
 // covers the column, then the track drifts left one set-width at a time.
 // Hovering eases it to a stop, dragging scrubs it, and on release it glides
-// back into its drift. Speed changes run through a critically damped spring
+// back into its leftward drift. Speed changes run through a critically damped spring
 // so nothing starts or stops abruptly.
 (function () {
   var root = document.querySelector('.marquee');
@@ -151,7 +151,9 @@
     var moved = Math.abs(e.clientX - drag.fromX) > 4;
     var held = e.timeStamp - drag.lastT > 100; // stopped before letting go
     var fling = moved && !held && !still.matches ? drag.vel : 0;
-    v = Math.max(-MAX_FLING, Math.min(MAX_FLING, fling));
+    // Only a leftward flick carries momentum: letting go always continues
+    // right to left, never gliding backwards first.
+    v = Math.max(-MAX_FLING, Math.min(0, fling));
     a = 0;
     drag = null;
     hovering = false; // resume on release; hover pauses again on next entry
