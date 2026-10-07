@@ -10,7 +10,7 @@ work/<slug>/index.html  one page per project
 styles.css              the only stylesheet (tokens at the top, dark mode included)
 cursor.js               liquid glass cursor (mouse and trackpad only)
 assets/                 favicon and any project images
-assets/marquee.js       "previously worked with" logo marquee (home)
+assets/marquee.js       "previously worked with" logo marquee (home; hover pauses, drag scrubs)
 assets/logos/           marquee logos, numbered in display order
 404.html
 ```
