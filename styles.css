@@ -206,12 +206,18 @@ h1 {
 }
 
 .lede {
-  font-size: calc(var(--step-1) * 1.8);
+  font-size: calc(var(--step-1) * 1.5);
   font-weight: 200;
   line-height: 1.45;
   letter-spacing: -0.01em;
   margin: 0;
   max-width: 32ch;
+}
+
+@media (min-width: 40rem) {
+  .lede {
+    font-size: calc(var(--step-1) * 1.8);
+  }
 }
 
 .lede .muted {
