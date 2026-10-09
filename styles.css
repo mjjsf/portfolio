@@ -772,21 +772,13 @@ p.note {
 
 /* ---- Ambient background (home) ---- */
 
-/* Slowly drifting topographic contours drawn by assets/flow.js, tinted by a
-   soft, wandering blend of --flow-c0..3 (hex only).
-   --flow-amount is the opacity of the fine lines; index lines are 1.6x.
-   --flow-blur is the defocus radius of each line in CSS px.
-   --flow-wash is how much of the colour gradient bleeds into the ground.
-   --flow-lift mixes the stops toward white (0 = as written, 1 = white). */
+/* Slowly drifting topographic contours drawn by assets/flow.js.
+   --flow-amount is the opacity of the fine lines; index lines are double.
+   --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
+   drops it to 0 under prefers-reduced-motion, where the frame is still. */
 .ambient {
-  --flow-c0: #ff9a76;
-  --flow-c1: #f78fd0;
-  --flow-c2: #8f9bff;
-  --flow-c3: #6fd3e8;
-  --flow-amount: 0.85;
-  --flow-blur: 6;
-  --flow-wash: 0.1;
-  --flow-lift: 0.72;
+  --flow-amount: 0.08;
+  --blur-shutter: 0.2;
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -801,24 +793,18 @@ p.note {
   }
 }
 
-/* Rules are nudged darker so row dividers read apart from the contours, and
-   muted text is pushed further from the ground so it holds WCAG AA (4.5:1)
-   over the brightest part of any line. */
+/* Rules are nudged darker so row dividers read apart from the contours. */
 .ambient.has-flow ~ .wrap {
   --rule: #d6d6d1;
-  --muted: #5f5f5a;
 }
 
 @media (prefers-color-scheme: dark) {
   .ambient {
-    --flow-amount: 0.1;
-    --flow-wash: 0.05;
-    --flow-lift: 0.15;
+    --flow-amount: 0.08;
   }
 
   .ambient.has-flow ~ .wrap {
     --rule: #353533;
-    --muted: #a3a39c;
   }
 }
 

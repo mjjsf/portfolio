@@ -1,6 +1,5 @@
-// Topographic contours for the homepage background: soft-focus isolines of a
-// slowly drifting noise field, tinted by a drifting four-stop colour gradient
-// (--flow-c0..3) over --bg.
+// Topographic contours for the homepage background: hairline isolines of a
+// slowly drifting noise field, drawn in --fg over --bg.
 (function () {
   var host = document.querySelector('.ambient');
   if (!host) return;
@@ -16,8 +15,7 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform float amt;uniform float soft;uniform float wash;',
-    'uniform vec3 c0;uniform vec3 c1;uniform vec3 c2;uniform vec3 c3;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
@@ -26,27 +24,22 @@
     'float field(vec2 p,float t){',
     ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
     ' return fbm(p+1.8*q+vec2(.02*t,0.))*22.;}',
-    // Soft colour fields: two broad, slowly wandering noise blobs blend the
-    // four stops, like out-of-focus light behind frosted glass.
-    'vec3 hue(vec2 p,float t){',
-    ' float a=smoothstep(.3,.7,n(p*.9+vec2(.013*t,-.009*t)));',
-    ' float b=smoothstep(.25,.75,n(p*.6+vec2(7.1,3.4)-vec2(.008*t,.011*t)));',
-    ' return mix(mix(c0,c1,a),mix(c2,c3,a),b);}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1;',
-    ' float v=field(p,t);',
+    // Motion blur: sample the field at the start and end of a shutter of sh
+    // seconds. Over that window the pixel's value sweeps v1..v0, so the share
+    // of the exposure an isoline spends on it is the overlap of that sweep with
+    // the line's ~1px footprint a. Fast-moving lines smear wider and fainter
+    // with the same total ink; still ones (and sh=0) stay crisp.
+    ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
+    ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
+    ' float m=max(min(abs(v0-v1),.5),a);',
     ' float d=abs(fract(v-.5)-.5);',
-    // Distance to the nearest isoline in device pixels, then a gaussian falloff
-    // of radius soft: a defocused glow around a faint core instead of a hairline.
-    ' float px=d/max(fwidth(v),1e-4);',
-    ' float glow=exp(-px*px/(2.*soft*soft));',
-    ' float core=exp(-px*px*.5);',
-    ' float line=glow*.9+core*.1;',
+    ' float line=max(0.,min(d+m*.5,a*.5)-max(d-m*.5,-a*.5))/m;',
     // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
-    ' vec3 col=hue(p,t);',
-    ' vec3 ground=mix(bg,hue(p*.7+3.,t),wash);',
-    ' gl_FragColor=vec4(mix(ground,col,clamp(line*amt*mix(1.,1.6,major),0.,1.)),1.);',
+    // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
+    ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.,1.4,major)),1.);',
     '}'
   ].join('\n');
 
@@ -74,7 +67,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'amt', 'soft', 'wash', 'c0', 'c1', 'c2', 'c3'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -82,22 +75,12 @@
   }
   function readColors() {
     var cs = getComputedStyle(host);
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     gl.uniform3fv(u.bg, rgb(cs.getPropertyValue('--bg')));
-    // --flow-lift mixes each stop toward white for paler, quieter lines.
-    var lift = num(cs, '--flow-lift', 0);
-    ['c0', 'c1', 'c2', 'c3'].forEach(function (k, i) {
-      gl.uniform3fv(u[k], rgb(cs.getPropertyValue('--flow-c' + i)).map(function (c) {
-        return c + (1 - c) * lift;
-      }));
-    });
-    gl.uniform1f(u.amt, num(cs, '--flow-amount', 0.5));
-    gl.uniform1f(u.soft, num(cs, '--flow-blur', 3) * dpr);
-    gl.uniform1f(u.wash, num(cs, '--flow-wash', 0.12));
-  }
-  function num(cs, name, fallback) {
-    var x = parseFloat(cs.getPropertyValue(name));
-    return isNaN(x) ? fallback : x;
+    gl.uniform3fv(u.ink, rgb(cs.getPropertyValue('--fg')));
+    gl.uniform1f(u.amt, parseFloat(cs.getPropertyValue('--flow-amount')) || 0.07);
+    // A still frame has no motion to blur.
+    var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
+    gl.uniform1f(u.sh, reduce.matches ? 0 : (isNaN(shutter) ? 0.2 : shutter));
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
@@ -142,9 +125,7 @@
 
   // Redraw in the same frame as the resize; waiting for the throttled loop
   // lets the cleared buffer show as a black flash while dragging the window.
-  addEventListener('resize', function () {
-    if (resize()) { readColors(); draw(performance.now()); }
-  });
+  addEventListener('resize', function () { if (resize()) draw(performance.now()); });
   [reduce, dark].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener('change', run);
   });
