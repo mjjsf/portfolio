@@ -41,7 +41,7 @@
     ' float px=d/max(fwidth(v),1e-4);',
     ' float glow=exp(-px*px/(2.*soft*soft));',
     ' float core=exp(-px*px*.5);',
-    ' float line=glow*.75+core*.25;',
+    ' float line=glow*.9+core*.1;',
     // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
     ' vec3 col=hue(p,t);',
@@ -84,8 +84,12 @@
     var cs = getComputedStyle(host);
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     gl.uniform3fv(u.bg, rgb(cs.getPropertyValue('--bg')));
+    // --flow-lift mixes each stop toward white for paler, quieter lines.
+    var lift = num(cs, '--flow-lift', 0);
     ['c0', 'c1', 'c2', 'c3'].forEach(function (k, i) {
-      gl.uniform3fv(u[k], rgb(cs.getPropertyValue('--flow-c' + i)));
+      gl.uniform3fv(u[k], rgb(cs.getPropertyValue('--flow-c' + i)).map(function (c) {
+        return c + (1 - c) * lift;
+      }));
     });
     gl.uniform1f(u.amt, num(cs, '--flow-amount', 0.5));
     gl.uniform1f(u.soft, num(cs, '--flow-blur', 3) * dpr);
