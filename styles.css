@@ -782,7 +782,7 @@ p.note {
   --flow-ink: #ffffff;
   --flow-amount: 0.8;
   --blur-shutter: 0.25;
-  --flow-glass: 400;
+  --flow-glass: 1000;
   position: fixed;
   inset: 0;
   z-index: -1;
