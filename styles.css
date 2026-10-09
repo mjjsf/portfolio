@@ -783,10 +783,10 @@ p.note {
   pointer-events: none;
 }
 
-/* The home page keeps a pale sage ground behind the contours. */
+/* The home page keeps a pale blue-grey ground behind the contours. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #e4e8df;
+    --bg: #dfe8e8;
   }
 }
 
