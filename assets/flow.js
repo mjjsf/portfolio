@@ -15,15 +15,15 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;uniform float rd;',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
     'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
-    ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
+    ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=mix(.5,.2,rd);}return v;}',
     'float field(vec2 p,float t){',
     ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
-    ' return fbm(p+1.8*q+vec2(.02*t,0.))*22.;}',
+    ' return fbm(p+1.8*(1.-.85*rd)*q+vec2(.02*t,0.))*22.*(1.+rd);}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1/sc;',
     // Motion blur: sample the field at the start and end of a shutter of sh
@@ -67,7 +67,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'rd'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -84,6 +84,10 @@
     // Contour feature size: 2 draws blobs twice as large with arcs twice as wide.
     var scale = parseFloat(cs.getPropertyValue('--flow-scale'));
     gl.uniform1f(u.sc, scale > 0 ? scale : 1);
+    // Roundness: 0 keeps the swirling, crinkled field; 1 calms the domain warp
+    // and fades the fine octaves so isolines close into smooth, rounded pools.
+    var round = parseFloat(cs.getPropertyValue('--flow-round'));
+    gl.uniform1f(u.rd, isNaN(round) ? 0 : Math.min(1, Math.max(0, round)));
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
