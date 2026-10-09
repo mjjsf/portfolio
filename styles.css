@@ -782,7 +782,7 @@ p.note {
    0 bends every wavelength alike). */
 .ambient {
   --flow-ink: #ffffff;
-  --flow-amount: 0.8;
+  --flow-amount: 1.4;
   --blur-shutter: 1;
   --flow-glass: 22;
   --flow-dispersion: 1;
