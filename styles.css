@@ -772,12 +772,13 @@ p.note {
 
 /* ---- Ambient background (home) ---- */
 
-/* Slowly drifting topographic contours drawn by assets/flow.js.
-   --flow-amount is the opacity of the fine lines; index lines are double.
+/* Slowly drifting topographic contours drawn by assets/flow.js in --flow-ink.
+   --flow-amount is the opacity of the fine lines; index lines are 1.4x.
    --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
    drops it to 0 under prefers-reduced-motion, where the frame is still. */
 .ambient {
-  --flow-amount: 0.08;
+  --flow-ink: #b0ff00;
+  --flow-amount: 0.6;
   --blur-shutter: 0.2;
   position: fixed;
   inset: 0;
@@ -800,7 +801,7 @@ p.note {
 
 @media (prefers-color-scheme: dark) {
   .ambient {
-    --flow-amount: 0.08;
+    --flow-amount: 0.45;
   }
 
   .ambient.has-flow ~ .wrap {
