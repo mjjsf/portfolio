@@ -776,13 +776,16 @@ p.note {
    --flow-amount is the opacity of the fine lines; index lines are 1.4x.
    --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
    drops it to 0 under prefers-reduced-motion, where the frame is still.
-   --flow-glass is the peak thickness in px of the drifting flint-glass
-   domes that refract and disperse the contours; 0 removes the glass. */
+   --flow-glass is the peak thickness in px of the drifting rutile domes
+   that refract and disperse the contours; 0 removes the glass.
+   --flow-dispersion scales how far the spectrum fans out (1 is rutile,
+   0 bends every wavelength alike). */
 .ambient {
   --flow-ink: #ffffff;
   --flow-amount: 1.2;
   --blur-shutter: 1;
-  --flow-glass: 50;
+  --flow-glass: 22;
+  --flow-dispersion: 1;
   position: fixed;
   inset: 0;
   z-index: -1;
