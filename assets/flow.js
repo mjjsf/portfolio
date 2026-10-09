@@ -1,5 +1,6 @@
 // Topographic contours for the homepage background: hairline isolines of a
-// slowly drifting noise field, drawn in --fg over --bg.
+// slowly drifting noise field, drawn in --fg over --bg, under a fixed
+// monochrome paper grain.
 (function () {
   var host = document.querySelector('.ambient');
   if (!host) return;
@@ -15,12 +16,14 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float grain;uniform float dp;',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
     'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
     ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
+    // Sin-free hash so the grain stays even across large pixel coordinates.
+    'float g(vec2 p){vec3 q=fract(p.xyx*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1;',
     ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
@@ -30,7 +33,14 @@
     ' float line=1.-smoothstep(0.,fwidth(v)*1.1,d);',
     ' float major=step(mod(floor(v+.5),4.),.5);',
     // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
-    ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.,1.4,major)),1.);',
+    ' vec3 c=mix(bg,ink,line*amt*mix(1.,1.4,major));',
+    // Paper grain: one grey value per CSS pixel, centred on zero so the mean
+    // tone (and text contrast) is unchanged. Its strength wanders unevenly
+    // across the page and it never moves with t, so nothing shimmers.
+    ' vec2 px=floor(gl_FragCoord.xy/dp);',
+    ' float patchy=.6+.8*n(px*.004+7.);',
+    ' c+=(g(px)-.5)*grain*patchy;',
+    ' gl_FragColor=vec4(c,1.);',
     '}'
   ].join('\n');
 
@@ -58,7 +68,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'grain', 'dp'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -69,6 +79,8 @@
     gl.uniform3fv(u.bg, rgb(cs.getPropertyValue('--bg')));
     gl.uniform3fv(u.ink, rgb(cs.getPropertyValue('--fg')));
     gl.uniform1f(u.amt, parseFloat(cs.getPropertyValue('--flow-amount')) || 0.07);
+    var grain = parseFloat(cs.getPropertyValue('--grain-amount'));
+    gl.uniform1f(u.grain, isNaN(grain) ? 0.035 : grain);
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
@@ -82,6 +94,7 @@
       canvas.height = h;
       gl.viewport(0, 0, w, h);
       gl.uniform2f(u.r, w, h);
+      gl.uniform1f(u.dp, dpr);
       return true;
     }
     return false;
@@ -89,6 +102,7 @@
 
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
   var dark = matchMedia('(prefers-color-scheme: dark)');
+  var contrast = matchMedia('(prefers-contrast: more)');
   var start = performance.now() - 20000; // skip the calm opening seconds
   var last = 0;
   var raf = 0;
@@ -114,7 +128,7 @@
   // Redraw in the same frame as the resize; waiting for the throttled loop
   // lets the cleared buffer show as a black flash while dragging the window.
   addEventListener('resize', function () { if (resize()) draw(performance.now()); });
-  [reduce, dark].forEach(function (mq) {
+  [reduce, dark, contrast].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener('change', run);
   });
   run();
