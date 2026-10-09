@@ -774,13 +774,13 @@ p.note {
 
 /* Slowly drifting topographic contours drawn by assets/flow.js in --fg.
    --flow-amount is the opacity of the fine lines; index lines are 1.4x.
-   --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
-   drops it to 0 under prefers-reduced-motion, where the frame is still.
+   --blur-shutter is the motion-blur exposure in seconds of drift; 0 (the
+   current setting) draws crisp lines with no blur.
    --flow-scale sizes the contour blobs: 2 makes them, and the arcs of their
    lines, twice as large (and the lines twice as far apart). */
 .ambient {
   --flow-amount: 0.08;
-  --blur-shutter: 0.2;
+  --blur-shutter: 0;
   --flow-scale: 0.5;
   position: fixed;
   inset: 0;
