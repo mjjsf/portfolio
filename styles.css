@@ -787,8 +787,8 @@ p.note {
   --flow-amount: 1.4;
   --blur-shutter: 1;
   --flow-glass: 22;
-  --flow-dispersion: 1;
-  --flow-scale: 3;
+  --flow-dispersion: 2;
+  --flow-scale: 1.5;
   position: fixed;
   inset: 0;
   z-index: -1;
