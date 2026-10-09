@@ -16,7 +16,7 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float grain;uniform float dp;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float grain;uniform float dp;uniform float sh;',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
@@ -24,13 +24,22 @@
     ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
     // Sin-free hash so the grain stays even across large pixel coordinates.
     'float g(vec2 p){vec3 q=fract(p.xyx*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
+    'float field(vec2 p,float t){',
+    ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
+    ' return fbm(p+1.8*q+vec2(.02*t,0.))*22.;}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1;',
-    ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
-    ' float v=fbm(p+1.8*q+vec2(.02*t,0.))*22.;',
-    // Anti-aliased ~1px isolines; every fourth one is a heavier index line.
+    // Motion blur: sample the field at the start and end of a shutter of sh
+    // seconds. Over that window the pixel's value sweeps v1..v0, so the share
+    // of the exposure an isoline spends on it is the overlap of that sweep with
+    // the line's ~1px footprint a. Fast-moving lines smear wider and fainter
+    // with the same total ink; still ones (and sh=0) stay crisp.
+    ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
+    ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
+    ' float m=max(min(abs(v0-v1),.5),a);',
     ' float d=abs(fract(v-.5)-.5);',
-    ' float line=1.-smoothstep(0.,fwidth(v)*1.1,d);',
+    ' float line=max(0.,min(d+m*.5,a*.5)-max(d-m*.5,-a*.5))/m;',
+    // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
     // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
     ' vec3 c=mix(bg,ink,line*amt*mix(1.,1.4,major));',
@@ -68,7 +77,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'grain', 'dp'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'grain', 'dp', 'sh'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -81,6 +90,9 @@
     gl.uniform1f(u.amt, parseFloat(cs.getPropertyValue('--flow-amount')) || 0.07);
     var grain = parseFloat(cs.getPropertyValue('--grain-amount'));
     gl.uniform1f(u.grain, isNaN(grain) ? 0.035 : grain);
+    // A still frame has no motion to blur.
+    var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
+    gl.uniform1f(u.sh, reduce.matches ? 0 : (isNaN(shutter) ? 0.2 : shutter));
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
