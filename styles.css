@@ -779,12 +779,18 @@ p.note {
    --flow-scale sizes the contour blobs: 2 makes them, and the arcs of their
    lines, twice as large (and the lines twice as far apart).
    --flow-round shapes them, from 0 (swirling, crinkled) to 1 (smooth,
-   rounded pools). */
+   rounded pools).
+   --flow-morph is how fast the blobs form, merge and dissolve in place
+   (2 is twice as fast, 0 freezes their shape).
+   --flow-drift slides the whole landscape across the page; 1 is the
+   original drift speed, 0 keeps it in place. */
 .ambient {
   --flow-amount: 0.1;
   --blur-shutter: 0;
   --flow-scale: 0.8;
   --flow-round: 0.4;
+  --flow-morph: 1;
+  --flow-drift: 0;
   position: fixed;
   inset: 0;
   z-index: -1;
