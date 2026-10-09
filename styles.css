@@ -777,8 +777,8 @@ p.note {
    --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
    drops it to 0 under prefers-reduced-motion, where the frame is still. */
 .ambient {
-  --flow-ink: #b0ff00;
-  --flow-amount: 0.6;
+  --flow-ink: #ffffff;
+  --flow-amount: 0.8;
   --blur-shutter: 0.2;
   position: fixed;
   inset: 0;
@@ -801,7 +801,7 @@ p.note {
 
 @media (prefers-color-scheme: dark) {
   .ambient {
-    --flow-amount: 0.45;
+    --flow-amount: 0.12;
   }
 
   .ambient.has-flow ~ .wrap {
