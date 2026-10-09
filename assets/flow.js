@@ -47,8 +47,8 @@
     // exactly at the mean index of refraction.
     ' float k=1.98/r.y;',
     ' vec3 N=nd(gl_FragCoord.xy*k+vec2(.03*t,-.02*t));',
-    ' float s=clamp((N.x-.55)/.25,0.,1.);',
-    ' vec2 gH=th*6.*s*(1.-s)/.25*N.yz*k;',
+    ' float s=clamp((N.x-.45)/.3,0.,1.);',
+    ' vec2 gH=th*6.*s*(1.-s)/.3*N.yz*k;',
     ' vec2 p=(gl_FragCoord.xy+gap*(nm-1.)*gH)/r.y*1.1;',
     ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
     ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
@@ -97,9 +97,12 @@
   var u = {};
   ['r', 't', 'bg', 'ink', 'amt', 'sh', 'th', 'gap', 'nm', 'sw', 'sn'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
-  // Dense flint glass (SF11): Cauchy's n = A + B / l^2, l in micrometres,
-  // gives n = 1.785 at 400 nm down to 1.728 at 700 nm.
-  function ior(l) { return 1.7 + 0.0136 / (l * l); }
+  // Rutile (TiO2, ordinary ray): Cauchy's n = A + B / l^2, l in micrometres,
+  // fitted to Devore (1951), gives n = 2.95 at 400 nm down to 2.55 at 700 nm.
+  // Its Abbe number is about 10, against 26 for dense flint glass, so for the
+  // same bend it fans the spectrum out roughly three times as wide. d scales
+  // B: 1 is rutile, 0 bends every wavelength alike.
+  function ior(l, d) { return 2.363 + d * 0.0931 / (l * l); }
   // CIE 1931 2-degree colour matching functions, multi-lobe Gaussian fit
   // (Wyman, Sloan & Shirley 2013), nm in, XYZ out.
   function cmf(nm) {
@@ -112,8 +115,8 @@
   }
   // Per wavelength: its weight in linear sRGB (XYZ -> sRGB, then normalised
   // per channel so the eight sum to white) and its index less the mean's.
-  (function () {
-    var sw = [], sn = [], sum = [0, 0, 0], N = 8, nMean = ior(0.55);
+  function spectrum(d) {
+    var sw = [], sn = [], sum = [0, 0, 0], N = 8, nMean = ior(0.55, d);
     for (var i = 0; i < N; i++) {
       var l = 0.4 + 0.3 * (i + 0.5) / N, c = cmf(l * 1000);
       var w = [
@@ -122,7 +125,7 @@
         0.0557 * c[0] - 0.2040 * c[1] + 1.0570 * c[2]
       ];
       sw.push(w);
-      sn.push(ior(l) - nMean);
+      sn.push(ior(l, d) - nMean);
       for (var k = 0; k < 3; k++) sum[k] += w[k];
     }
     gl.uniform3fv(u.sw, [].concat.apply([], sw.map(function (w) {
@@ -130,7 +133,7 @@
     })));
     gl.uniform1fv(u.sn, sn);
     gl.uniform1f(u.nm, nMean);
-  })();
+  }
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -149,6 +152,8 @@
     var glass = parseFloat(cs.getPropertyValue('--flow-glass'));
     gl.uniform1f(u.th, (isNaN(glass) ? 0 : glass) * dpr);
     gl.uniform1f(u.gap, 400 * dpr);
+    var disp = parseFloat(cs.getPropertyValue('--flow-dispersion'));
+    spectrum(isNaN(disp) ? 1 : Math.max(0, disp));
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
