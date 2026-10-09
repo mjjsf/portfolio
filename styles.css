@@ -790,7 +790,7 @@ p.note {
 /* The home page keeps a pale blue-grey ground behind the contours. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #dfe8e8;
+    --bg: #e7eeee;
   }
 }
 
