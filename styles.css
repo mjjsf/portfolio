@@ -805,6 +805,15 @@ p.note {
   }
 }
 
+/* Over the contours, the static horizontal rules are dotted: 2px dash, 2px gap. */
+.ambient ~ .wrap .work-list,
+.ambient ~ .wrap .work-list li,
+.ambient ~ .wrap .site-footer,
+.ambient ~ .wrap .site-header.has-menu nav,
+.ambient ~ .wrap .site-header.has-menu nav a {
+  border-image: repeating-linear-gradient(to right, var(--rule) 0 2px, transparent 2px 4px) 1;
+}
+
 /* ---- Utilities ---- */
 
 .placeholder {
