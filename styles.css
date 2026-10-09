@@ -1,7 +1,7 @@
 /* micahjohnson.co — minimal, text-centric */
 
 :root {
-  --bg: #f2f0ed;
+  --bg: #f0f0f0;
   --fg: #151515;
   --muted: #6b6b66;
   --rule: #e4e4df;
@@ -786,7 +786,7 @@ p.note {
 /* The home page keeps the lighter ground behind the contours. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #fafaf8;
+    --bg: #fafafa;
   }
 }
 
