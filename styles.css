@@ -774,12 +774,10 @@ p.note {
 
 /* Slowly drifting topographic contours drawn by assets/flow.js.
    --flow-amount is the opacity of the fine lines; index lines are double.
-   --grain-amount is the peak-to-peak spread of the static paper grain.
    --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
    drops it to 0 under prefers-reduced-motion, where the frame is still. */
 .ambient {
   --flow-amount: 0.08;
-  --grain-amount: 0.035;
   --blur-shutter: 0.2;
   position: fixed;
   inset: 0;
@@ -803,18 +801,10 @@ p.note {
 @media (prefers-color-scheme: dark) {
   .ambient {
     --flow-amount: 0.08;
-    --grain-amount: 0.03;
   }
 
   .ambient.has-flow ~ .wrap {
     --rule: #353533;
-  }
-}
-
-/* Drop the grain for anyone asking for more contrast. */
-@media (prefers-contrast: more) {
-  .ambient {
-    --grain-amount: 0;
   }
 }
 
