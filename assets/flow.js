@@ -15,7 +15,7 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float rf;',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
@@ -24,22 +24,35 @@
     'float field(vec2 p,float t){',
     ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
     ' return fbm(p+1.8*q+vec2(.02*t,0.))*22.;}',
+    // Motion blur: over a shutter of sh seconds the pixel's value sweeps
+    // v1..v0, so the share of the exposure an isoline spends on it is the
+    // overlap of that sweep with the line's ~1px footprint a. Fast-moving lines
+    // smear wider and fainter with the same total ink; still ones stay crisp.
+    'float cov(float v0,float v1,float a){',
+    ' float m=max(min(abs(v0-v1),.5),a);',
+    ' float d=abs(fract((v0+v1)*.5-.5)-.5);',
+    ' return max(0.,min(d+m*.5,a*.5)-max(d-m*.5,-a*.5))/m;}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1;',
-    // Motion blur: sample the field at the start and end of a shutter of sh
-    // seconds. Over that window the pixel's value sweeps v1..v0, so the share
-    // of the exposure an isoline spends on it is the overlap of that sweep with
-    // the line's ~1px footprint a. Fast-moving lines smear wider and fainter
-    // with the same total ink; still ones (and sh=0) stay crisp.
     ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
     ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
-    ' float m=max(min(abs(v0-v1),.5),a);',
-    ' float d=abs(fract(v-.5)-.5);',
-    ' float line=max(0.,min(d+m*.5,a*.5)-max(d-m*.5,-a*.5))/m;',
+    // Refraction: where the field flattens out (hilltops and saddles, where
+    // the contours turn tightest) and a slow drifting patch allows it, split
+    // the line into R, G and B copies nudged apart across its width, as if
+    // seen through a prism. Elsewhere the three copies coincide and the line
+    // keeps its ink. --flow-refract (px) sets the split; 0 turns it all off.
+    ' float bend=1.-smoothstep(.004,.012,fwidth(v));',
+    ' float patch=smoothstep(.45,.7,n(p*1.8+vec2(.03*t,-.02*t)));',
+    ' float z=bend*patch*step(.001,rf),k=z*rf*a;',
+    ' vec3 line=vec3(cov(v0+k,v1+k,a),cov(v0,v1,a),cov(v0-k,v1-k,a));',
+    // The ink there also leans toward a spectral hue that drifts along the
+    // contour levels, and gains a little weight so the colour carries.
+    ' vec3 spec=.5+.5*cos(6.2832*(fract(v*.07+.01*t)+vec3(0.,.33,.67)));',
+    ' vec3 col=mix(ink,spec,z*.45);',
     // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
     // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
-    ' gl_FragColor=vec4(mix(bg,ink,line*amt*mix(1.,1.4,major)),1.);',
+    ' gl_FragColor=vec4(mix(bg,col,clamp(line*amt*mix(1.,1.4,major)*(1.+z*.5),0.,1.)),1.);',
     '}'
   ].join('\n');
 
@@ -67,7 +80,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'rf'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -81,6 +94,8 @@
     // A still frame has no motion to blur.
     var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
     gl.uniform1f(u.sh, reduce.matches ? 0 : (isNaN(shutter) ? 0.2 : shutter));
+    var refract = parseFloat(cs.getPropertyValue('--flow-refract'));
+    gl.uniform1f(u.rf, isNaN(refract) ? 0 : refract);
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
