@@ -15,7 +15,7 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;',
     'uniform float th;uniform float gap;uniform float nm;uniform vec3 sw[8];uniform float sn[8];',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
@@ -49,7 +49,7 @@
     ' vec3 N=nd(gl_FragCoord.xy*k+vec2(.03*t,-.02*t));',
     ' float s=clamp((N.x-.45)/.3,0.,1.);',
     ' vec2 gH=th*6.*s*(1.-s)/.3*N.yz*k;',
-    ' vec2 p=(gl_FragCoord.xy+gap*(nm-1.)*gH)/r.y*1.1;',
+    ' vec2 p=(gl_FragCoord.xy+gap*(nm-1.)*gH)/r.y*1.1/sc;',
     ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
     ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
     // Dispersion: the index varies with wavelength, so each wavelength lands
@@ -95,7 +95,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'th', 'gap', 'nm', 'sw', 'sn'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'th', 'gap', 'nm', 'sw', 'sn'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   // Rutile (TiO2, ordinary ray): Cauchy's n = A + B / l^2, l in micrometres,
   // fitted to Devore (1951), gives n = 2.95 at 400 nm down to 2.55 at 700 nm.
@@ -147,6 +147,9 @@
     // A still frame has no motion to blur.
     var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
     gl.uniform1f(u.sh, reduce.matches ? 0 : (isNaN(shutter) ? 0.2 : shutter));
+    // Contour feature size: 2 draws blobs twice as large with arcs twice as wide.
+    var scale = parseFloat(cs.getPropertyValue('--flow-scale'));
+    gl.uniform1f(u.sc, scale > 0 ? scale : 1);
     // Glass thickness and its height above the contours, in device px.
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var glass = parseFloat(cs.getPropertyValue('--flow-glass'));
