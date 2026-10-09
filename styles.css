@@ -797,7 +797,7 @@ p.note {
    is darkened to hold WCAG AA (4.5:1) against it. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #f3fafa;
+    --bg: #e1e8e8;
     --muted: #686863;
   }
 }
