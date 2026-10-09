@@ -794,8 +794,8 @@ p.note {
    is darkened to hold WCAG AA (4.5:1) against it. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #dee4e4;
-    --muted: #63635e;
+    --bg: #e2e9e9;
+    --muted: #666661;
   }
 }
 
@@ -805,10 +805,6 @@ p.note {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:has(.ambient) {
-    --bg: #10100f;
-  }
-
   .ambient {
     --flow-amount: 0.12;
   }
