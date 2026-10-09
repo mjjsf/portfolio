@@ -790,10 +790,12 @@ p.note {
   pointer-events: none;
 }
 
-/* The home page keeps a pale blue-grey ground behind the contours. */
+/* The home page keeps a blue-grey ground behind the contours, and muted text
+   is darkened to hold WCAG AA (4.5:1) against it. */
 @media (prefers-color-scheme: light) {
   :root:has(.ambient) {
-    --bg: #e7eeee;
+    --bg: #adb2b2;
+    --muted: #424240;
   }
 }
 
@@ -803,6 +805,10 @@ p.note {
 }
 
 @media (prefers-color-scheme: dark) {
+  :root:has(.ambient) {
+    --bg: #0d0d0c;
+  }
+
   .ambient {
     --flow-amount: 0.12;
   }
