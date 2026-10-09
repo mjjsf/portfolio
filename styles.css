@@ -780,7 +780,7 @@ p.note {
    domes that refract and disperse the contours; 0 removes the glass. */
 .ambient {
   --flow-ink: #ffffff;
-  --flow-amount: 0.8;
+  --flow-amount: 1.2;
   --blur-shutter: 1;
   --flow-glass: 50;
   position: fixed;
