@@ -776,15 +776,17 @@ p.note {
    soft, wandering blend of --flow-c0..3 (hex only).
    --flow-amount is the opacity of the fine lines; index lines are 1.6x.
    --flow-blur is the defocus radius of each line in CSS px.
-   --flow-wash is how much of the colour gradient bleeds into the ground. */
+   --flow-wash is how much of the colour gradient bleeds into the ground.
+   --flow-lift mixes the stops toward white (0 = as written, 1 = white). */
 .ambient {
   --flow-c0: #ff9a76;
   --flow-c1: #f78fd0;
   --flow-c2: #8f9bff;
   --flow-c3: #6fd3e8;
-  --flow-amount: 0.32;
-  --flow-blur: 3;
-  --flow-wash: 0.12;
+  --flow-amount: 0.85;
+  --flow-blur: 6;
+  --flow-wash: 0.1;
+  --flow-lift: 0.72;
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -799,19 +801,24 @@ p.note {
   }
 }
 
-/* Rules are nudged darker so row dividers read apart from the contours. */
+/* Rules are nudged darker so row dividers read apart from the contours, and
+   muted text is pushed further from the ground so it holds WCAG AA (4.5:1)
+   over the brightest part of any line. */
 .ambient.has-flow ~ .wrap {
   --rule: #d6d6d1;
+  --muted: #5f5f5a;
 }
 
 @media (prefers-color-scheme: dark) {
   .ambient {
-    --flow-amount: 0.3;
-    --flow-wash: 0.06;
+    --flow-amount: 0.1;
+    --flow-wash: 0.05;
+    --flow-lift: 0.15;
   }
 
   .ambient.has-flow ~ .wrap {
     --rule: #353533;
+    --muted: #a3a39c;
   }
 }
 
