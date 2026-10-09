@@ -15,10 +15,16 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float rf;',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;',
+    'uniform float th;uniform float gap;uniform float nm;uniform vec3 sw[8];uniform float sn[8];',
     'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
     'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
     ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
+    // Value noise with its analytic gradient: vec3(value, d/dx, d/dy).
+    'vec3 nd(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f),du=6.*f*(1.-f);',
+    ' float a=h(i),b=h(i+vec2(1,0)),c=h(i+vec2(0,1)),d=h(i+vec2(1,1));',
+    ' return vec3(a+(b-a)*u.x+(c-a)*u.y+(a-b-c+d)*u.x*u.y,',
+    '  du*vec2(b-a+(a-b-c+d)*u.y,c-a+(a-b-c+d)*u.x));}',
     'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
     ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=.5;}return v;}',
     'float field(vec2 p,float t){',
@@ -33,26 +39,35 @@
     ' float d=abs(fract((v0+v1)*.5-.5)-.5);',
     ' return max(0.,min(d+m*.5,a*.5)-max(d-m*.5,-a*.5))/m;}',
     'void main(){',
-    ' vec2 p=gl_FragCoord.xy/r.y*1.1;',
+    // Glass: slowly drifting domes of glass H, up to th px thick, hang a gap of
+    // gap px above the contour plane. A thin wedge of slope grad(H) bends a ray
+    // by (n - 1) * grad(H) (Snell's law, paraxial), so each pixel sees the
+    // plane displaced by gap * (n - 1) * grad(H). H is a smoothstep of value
+    // noise, so grad(H) per device px comes analytically. We trace the ray
+    // exactly at the mean index of refraction.
+    ' float k=1.98/r.y;',
+    ' vec3 N=nd(gl_FragCoord.xy*k+vec2(.03*t,-.02*t));',
+    ' float s=clamp((N.x-.55)/.25,0.,1.);',
+    ' vec2 gH=th*6.*s*(1.-s)/.25*N.yz*k;',
+    ' vec2 p=(gl_FragCoord.xy+gap*(nm-1.)*gH)/r.y*1.1;',
     ' float v0=field(p,t),v1=sh>0.?field(p,t-sh):v0;',
     ' float v=(v0+v1)*.5,a=fwidth(v)*1.1;',
-    // Refraction: where the field flattens out (hilltops and saddles, where
-    // the contours turn tightest) and a slow drifting patch allows it, split
-    // the line into R, G and B copies nudged apart across its width, as if
-    // seen through a prism. Elsewhere the three copies coincide and the line
-    // keeps its ink. --flow-refract (px) sets the split; 0 turns it all off.
-    ' float bend=1.-smoothstep(.004,.012,fwidth(v));',
-    ' float patch=smoothstep(.45,.7,n(p*1.8+vec2(.03*t,-.02*t)));',
-    ' float z=bend*patch*step(.001,rf),k=z*rf*a;',
-    ' vec3 line=vec3(cov(v0+k,v1+k,a),cov(v0,v1,a),cov(v0-k,v1-k,a));',
-    // The ink there also leans toward a spectral hue that drifts along the
-    // contour levels, and gains a little weight so the colour carries.
-    ' vec3 spec=.5+.5*cos(6.2832*(fract(v*.07+.01*t)+vec3(0.,.33,.67)));',
-    ' vec3 col=mix(ink,spec,z*.45);',
+    // Dispersion: the index varies with wavelength, so each wavelength lands
+    // gap * (n_l - n_mean) * grad(H) px further along. Over that pixel-scale
+    // offset the field is linear, shifting its value by grad(v) . offset.
+    // Eight wavelengths from 400 to 700 nm are weighed into RGB by the CIE
+    // 1931 observer (sw, normalised so an even spectrum stays white). Away
+    // from the glass every offset is zero and the line keeps its ink.
+    ' vec2 gv=vec2(dFdx(v),dFdy(v));',
+    ' vec3 line=vec3(0.);',
+    ' for(int i=0;i<8;i++){',
+    '  float dv=dot(gv,gap*sn[i]*gH);',
+    '  line+=sw[i]*cov(v0+dv,v1+dv,a);',
+    ' }',
     // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
     // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
-    ' gl_FragColor=vec4(mix(bg,col,clamp(line*amt*mix(1.,1.4,major)*(1.+z*.5),0.,1.)),1.);',
+    ' gl_FragColor=vec4(mix(bg,ink,clamp(line*amt*mix(1.,1.4,major),0.,1.)),1.);',
     '}'
   ].join('\n');
 
@@ -80,7 +95,42 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'rf'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'th', 'gap', 'nm', 'sw', 'sn'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+
+  // Dense flint glass (SF11): Cauchy's n = A + B / l^2, l in micrometres,
+  // gives n = 1.785 at 400 nm down to 1.728 at 700 nm.
+  function ior(l) { return 1.7 + 0.0136 / (l * l); }
+  // CIE 1931 2-degree colour matching functions, multi-lobe Gaussian fit
+  // (Wyman, Sloan & Shirley 2013), nm in, XYZ out.
+  function cmf(nm) {
+    function g(x, mu, s1, s2) { var t = (x - mu) * (x < mu ? s1 : s2); return Math.exp(-0.5 * t * t); }
+    return [
+      0.362 * g(nm, 442.0, 0.0624, 0.0374) + 1.056 * g(nm, 599.8, 0.0264, 0.0323) - 0.065 * g(nm, 501.1, 0.0490, 0.0382),
+      0.821 * g(nm, 568.8, 0.0213, 0.0247) + 0.286 * g(nm, 530.9, 0.0613, 0.0322),
+      1.217 * g(nm, 437.0, 0.0845, 0.0278) + 0.681 * g(nm, 459.0, 0.0385, 0.0725)
+    ];
+  }
+  // Per wavelength: its weight in linear sRGB (XYZ -> sRGB, then normalised
+  // per channel so the eight sum to white) and its index less the mean's.
+  (function () {
+    var sw = [], sn = [], sum = [0, 0, 0], N = 8, nMean = ior(0.55);
+    for (var i = 0; i < N; i++) {
+      var l = 0.4 + 0.3 * (i + 0.5) / N, c = cmf(l * 1000);
+      var w = [
+        3.2406 * c[0] - 1.5372 * c[1] - 0.4986 * c[2],
+        -0.9689 * c[0] + 1.8758 * c[1] + 0.0415 * c[2],
+        0.0557 * c[0] - 0.2040 * c[1] + 1.0570 * c[2]
+      ];
+      sw.push(w);
+      sn.push(ior(l) - nMean);
+      for (var k = 0; k < 3; k++) sum[k] += w[k];
+    }
+    gl.uniform3fv(u.sw, [].concat.apply([], sw.map(function (w) {
+      return w.map(function (x, k) { return x / sum[k]; });
+    })));
+    gl.uniform1fv(u.sn, sn);
+    gl.uniform1f(u.nm, nMean);
+  })();
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -94,8 +144,11 @@
     // A still frame has no motion to blur.
     var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
     gl.uniform1f(u.sh, reduce.matches ? 0 : (isNaN(shutter) ? 0.2 : shutter));
-    var refract = parseFloat(cs.getPropertyValue('--flow-refract'));
-    gl.uniform1f(u.rf, isNaN(refract) ? 0 : refract);
+    // Glass thickness and its height above the contours, in device px.
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var glass = parseFloat(cs.getPropertyValue('--flow-glass'));
+    gl.uniform1f(u.th, (isNaN(glass) ? 0 : glass) * dpr);
+    gl.uniform1f(u.gap, 400 * dpr);
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
