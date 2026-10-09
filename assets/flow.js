@@ -1,5 +1,7 @@
 // Topographic contours for the homepage background: hairline isolines of a
-// slowly drifting noise field, drawn in --fg over --bg.
+// slowly evolving noise field, drawn in --fg over --bg. Time is the noise's
+// third axis, so blobs swell, merge, split and fade in place; --flow-drift
+// can still slide the whole landscape as before.
 (function () {
   var host = document.querySelector('.ambient');
   if (!host) return;
@@ -15,15 +17,22 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;uniform float rd;',
-    'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
-    'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
-    ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
-    'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
-    ' for(int i=0;i<4;i++){v+=a*n(p);p=m*p;a*=mix(.5,.2,rd);}return v;}',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;uniform float rd;uniform float mo;uniform float dr;',
+    'float h(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}',
+    // 3D value noise: x and y are the page, z is time.
+    'float n(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
+    ' float a=mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y);',
+    ' float b=mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y);',
+    ' return mix(a,b,f.z);}',
+    // Finer octaves evolve faster, as small features would.
+    'float fbm(vec2 p,float z){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
+    ' for(int i=0;i<4;i++){v+=a*n(vec3(p,z));p=m*p;z*=1.5;a*=mix(.5,.2,rd);}return v;}',
+    // z advances at mo, so a blob reforms over ~30s at 1; dr slides the
+    // landscape at the old drift speed when 1.
     'float field(vec2 p,float t){',
-    ' vec2 q=vec2(fbm(p+vec2(0.,.05*t)),fbm(p+vec2(5.2,1.3)-.04*t));',
-    ' return fbm(p+1.8*(1.-.85*rd)*q+vec2(.02*t,0.))*22.*(1.+rd);}',
+    ' float z=.03*mo*t;',
+    ' vec2 q=vec2(fbm(p+vec2(0.,.05*t*dr),z),fbm(p+vec2(5.2,1.3)-.04*t*dr,z+7.3));',
+    ' return fbm(p+1.8*(1.-.85*rd)*q+vec2(.02*t*dr,0.),z+13.1)*22.*(1.+rd);}',
     'void main(){',
     ' vec2 p=gl_FragCoord.xy/r.y*1.1/sc;',
     // Motion blur: sample the field at the start and end of a shutter of sh
@@ -67,7 +76,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'rd'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'rd', 'mo', 'dr'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -88,6 +97,12 @@
     // and fades the fine octaves so isolines close into smooth, rounded pools.
     var round = parseFloat(cs.getPropertyValue('--flow-round'));
     gl.uniform1f(u.rd, isNaN(round) ? 0 : Math.min(1, Math.max(0, round)));
+    // Morph: how fast blobs form and dissolve in place. Drift: how fast the
+    // landscape slides across the page (1 is the original drift).
+    var morph = parseFloat(cs.getPropertyValue('--flow-morph'));
+    gl.uniform1f(u.mo, isNaN(morph) ? 1 : Math.max(0, morph));
+    var drift = parseFloat(cs.getPropertyValue('--flow-drift'));
+    gl.uniform1f(u.dr, isNaN(drift) ? 0 : drift);
   }
 
   // Full device resolution (capped) so the hairlines stay crisp. Returns true
