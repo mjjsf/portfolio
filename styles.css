@@ -789,7 +789,7 @@ p.note {
   --blur-shutter: 0;
   --flow-scale: 0.5;
   --flow-round: 0.4;
-  --flow-morph: 1;
+  --flow-morph: 2;
   --flow-drift: 0;
   position: fixed;
   inset: 0;
