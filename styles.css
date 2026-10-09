@@ -806,14 +806,15 @@ p.note {
 }
 
 /* Over the contours, the static horizontal rules are dotted: 2px dash, 2px gap,
-   drawn 50% darker than --rule in light mode. */
+   drawn 50% darker than --rule, then 25% lighter, in light mode, and
+   25% transparent in both modes. */
 .ambient ~ .wrap {
-  --rule-dot: color-mix(in srgb, var(--rule), #000);
+  --rule-dot: color-mix(in srgb, color-mix(in srgb, color-mix(in srgb, var(--rule), #000) 75%, #fff) 75%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   .ambient ~ .wrap {
-    --rule-dot: var(--rule);
+    --rule-dot: color-mix(in srgb, var(--rule) 75%, transparent);
   }
 }
 
