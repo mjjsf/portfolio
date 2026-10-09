@@ -1,5 +1,5 @@
 // Topographic contours for the homepage background: hairline isolines of a
-// slowly drifting noise field, drawn in --fg over --bg.
+// slowly drifting noise field, drawn in --flow-ink (else --fg) over --bg.
 (function () {
   var host = document.querySelector('.ambient');
   if (!host) return;
@@ -76,7 +76,7 @@
   function readColors() {
     var cs = getComputedStyle(host);
     gl.uniform3fv(u.bg, rgb(cs.getPropertyValue('--bg')));
-    gl.uniform3fv(u.ink, rgb(cs.getPropertyValue('--fg')));
+    gl.uniform3fv(u.ink, rgb(cs.getPropertyValue('--flow-ink') || cs.getPropertyValue('--fg')));
     gl.uniform1f(u.amt, parseFloat(cs.getPropertyValue('--flow-amount')) || 0.07);
     // A still frame has no motion to blur.
     var shutter = parseFloat(cs.getPropertyValue('--blur-shutter'));
