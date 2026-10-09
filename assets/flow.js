@@ -51,6 +51,7 @@
     ' vec3 col=mix(ink,spec,z*.45);',
     // Every fourth isoline is a heavier index line.
     ' float major=step(mod(floor(v+.5),4.),.5);',
+    // Line 33 (x.,x.,major) first x is three line grouping, second x is index line
     ' gl_FragColor=vec4(mix(bg,col,clamp(line*amt*mix(1.,1.4,major)*(1.+z*.5),0.,1.)),1.);',
     '}'
   ].join('\n');
