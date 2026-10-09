@@ -779,13 +779,16 @@ p.note {
    --flow-glass is the peak thickness in px of the drifting rutile domes
    that refract and disperse the contours; 0 removes the glass.
    --flow-dispersion scales how far the spectrum fans out (1 is rutile,
-   0 bends every wavelength alike). */
+   0 bends every wavelength alike).
+   --flow-scale sizes the contour blobs: 2 makes them, and the arcs of their
+   lines, twice as large (and the lines twice as far apart). */
 .ambient {
   --flow-ink: #ffffff;
   --flow-amount: 1.4;
   --blur-shutter: 1;
   --flow-glass: 22;
   --flow-dispersion: 1;
+  --flow-scale: 1.8;
   position: fixed;
   inset: 0;
   z-index: -1;
