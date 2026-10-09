@@ -784,7 +784,7 @@ p.note {
   --flow-amount: 0.1;
   --blur-shutter: 0;
   --flow-scale: 0.8;
-  --flow-round: 0.7;
+  --flow-round: 0.4;
   position: fixed;
   inset: 0;
   z-index: -1;
