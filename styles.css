@@ -784,7 +784,7 @@ p.note {
    lines, twice as large (and the lines twice as far apart). */
 .ambient {
   --flow-ink: #ffffff;
-  --flow-amount: 1.4;
+  --flow-amount: 3;
   --blur-shutter: 1;
   --flow-glass: 22;
   --flow-dispersion: 3;
