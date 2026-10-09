@@ -779,7 +779,7 @@ p.note {
    --flow-scale sizes the contour blobs: 2 makes them, and the arcs of their
    lines, twice as large (and the lines twice as far apart). */
 .ambient {
-  --flow-amount: 0.2;
+  --flow-amount: 0.1;
   --blur-shutter: 0;
   --flow-scale: 0.8;
   position: fixed;
