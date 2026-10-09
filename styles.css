@@ -809,16 +809,16 @@ p.note {
   }
 }
 
-/* Over the contours, the static horizontal rules are dotted: 2px dash, 2px gap,
-   drawn 50% darker than --rule, then 25% lighter, in light mode, and
-   25% transparent in both modes. */
+/* Over the contours, the static horizontal rules are solid, drawn 50% darker
+   than --rule, then 25% lighter, in light mode, and 25% transparent in both
+   modes. */
 .ambient ~ .wrap {
-  --rule-dot: color-mix(in srgb, color-mix(in srgb, color-mix(in srgb, var(--rule), #000) 75%, #fff) 75%, transparent);
+  --rule-line: color-mix(in srgb, color-mix(in srgb, color-mix(in srgb, var(--rule), #000) 75%, #fff) 75%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   .ambient ~ .wrap {
-    --rule-dot: color-mix(in srgb, var(--rule) 75%, transparent);
+    --rule-line: color-mix(in srgb, var(--rule) 75%, transparent);
   }
 }
 
@@ -827,7 +827,7 @@ p.note {
 .ambient ~ .wrap .site-footer,
 .ambient ~ .wrap .site-header.has-menu nav,
 .ambient ~ .wrap .site-header.has-menu nav a {
-  border-image: repeating-linear-gradient(to right, var(--rule-dot) 0 2px, transparent 2px 4px) 1;
+  border-image: linear-gradient(var(--rule-line), var(--rule-line)) 1;
 }
 
 /* ---- Utilities ---- */
