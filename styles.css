@@ -785,7 +785,7 @@ p.note {
 .ambient {
   --flow-ink: #ffffff;
   --flow-amount: 6;
-  --blur-shutter: 1;
+  --blur-shutter: 3;
   --flow-glass: 22;
   --flow-dispersion: 3;
   --flow-scale: 8;
