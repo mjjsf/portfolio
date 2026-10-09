@@ -775,11 +775,14 @@ p.note {
 /* Slowly drifting topographic contours drawn by assets/flow.js in --flow-ink.
    --flow-amount is the opacity of the fine lines; index lines are 1.4x.
    --blur-shutter is the motion-blur exposure in seconds of drift; flow.js
-   drops it to 0 under prefers-reduced-motion, where the frame is still. */
+   drops it to 0 under prefers-reduced-motion, where the frame is still.
+   --flow-refract is the prism split in px where contours turn tightest;
+   0 turns the refraction colour off. */
 .ambient {
   --flow-ink: #ffffff;
   --flow-amount: 0.8;
   --blur-shutter: 0.25;
+  --flow-refract: 1.5;
   position: fixed;
   inset: 0;
   z-index: -1;
