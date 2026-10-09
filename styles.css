@@ -781,7 +781,7 @@ p.note {
 .ambient {
   --flow-amount: 0.08;
   --blur-shutter: 0;
-  --flow-scale: 0.5;
+  --flow-scale: 0.8;
   position: fixed;
   inset: 0;
   z-index: -1;
