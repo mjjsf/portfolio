@@ -1,7 +1,8 @@
 // Topographic contours for the homepage background: hairline isolines of a
-// slowly evolving noise field, drawn in --fg over --bg. Time is the noise's
-// third axis, so blobs swell, merge, split and fade in place; --flow-drift
-// can still slide the whole landscape as before.
+// continuously evolving noise field, drawn in --fg over --bg. Time is the
+// noise's third axis, so blobs swell, merge, split and fade in place; --flow-drift
+// can still slide the whole landscape as before. Each visit starts from a
+// random point in the field, so the landscape never repeats.
 (function () {
   var host = document.querySelector('.ambient');
   if (!host) return;
@@ -17,20 +18,35 @@
   var frag = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;uniform float rd;uniform float mo;uniform float dr;',
-    'float h(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}',
-    // 3D value noise: x and y are the page, z is time.
-    'float n(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
-    ' float a=mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y);',
-    ' float b=mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y);',
-    ' return mix(a,b,f.z);}',
+    'uniform vec2 r;uniform float t;uniform vec3 bg;uniform vec3 ink;uniform float amt;uniform float sh;uniform float sc;uniform float rd;uniform float mo;uniform float dr;uniform float sd;',
+    // 3D simplex noise (Ashima Arts / Stefan Gustavson, MIT): x and y are the
+    // page, z is time. Its skewed lattice means no two regions cross a cell
+    // boundary together, so the field changes at an even pace with no
+    // screen-wide pulse; the old value noise stalled everywhere at once.
+    'vec4 pm(vec4 x){x=mod(x,289.);return mod((x*34.+1.)*x,289.);}',
+    'float sn(vec3 v){const vec2 C=vec2(1./6.,1./3.);',
+    ' vec3 i=floor(v+dot(v,C.yyy)),x0=v-i+dot(i,C.xxx);',
+    ' vec3 g=step(x0.yzx,x0.xyz),l=1.-g,i1=min(g,l.zxy),i2=max(g,l.zxy);',
+    ' vec3 x1=x0-i1+C.xxx,x2=x0-i2+C.yyy,x3=x0-.5;',
+    ' i=mod(i,289.);',
+    ' vec4 p=pm(pm(pm(i.z+vec4(0.,i1.z,i2.z,1.))+i.y+vec4(0.,i1.y,i2.y,1.))+i.x+vec4(0.,i1.x,i2.x,1.));',
+    ' vec4 j=p-49.*floor(p/49.),xf=floor(j/7.),yf=floor(j-7.*xf);',
+    ' vec4 x=(xf*2.+.5)/7.-1.,y=(yf*2.+.5)/7.-1.,hh=1.-abs(x)-abs(y);',
+    ' vec4 b0=vec4(x.xy,y.xy),b1=vec4(x.zw,y.zw),s0=floor(b0)*2.+1.,s1=floor(b1)*2.+1.,k=-step(hh,vec4(0.));',
+    ' vec4 a0=b0.xzyw+s0.xzyw*k.xxyy,a1=b1.xzyw+s1.xzyw*k.zzww;',
+    ' vec3 g0=normalize(vec3(a0.xy,hh.x)),g1=normalize(vec3(a0.zw,hh.y)),g2=normalize(vec3(a1.xy,hh.z)),g3=normalize(vec3(a1.zw,hh.w));',
+    ' vec4 m=max(.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.);m*=m;',
+    ' return 42.*dot(m*m,vec4(dot(g0,x0),dot(g1,x1),dot(g2,x2),dot(g3,x3)));}',
+    // Stretched and scaled to match the feature size and contour density of
+    // the value noise it replaced, centred on .5 as that was.
+    'float n(vec3 p){return .5+.38*sn(p*.55);}',
     // Finer octaves evolve faster, as small features would.
     'float fbm(vec2 p,float z){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
     ' for(int i=0;i<4;i++){v+=a*n(vec3(p,z));p=m*p;z*=1.5;a*=mix(.5,.2,rd);}return v;}',
     // z advances at mo, so a blob reforms over ~30s at 1; dr slides the
     // landscape at the old drift speed when 1.
     'float field(vec2 p,float t){',
-    ' float z=.03*mo*t;',
+    ' float z=.03*mo*t+sd;',
     ' vec2 q=vec2(fbm(p+vec2(0.,.05*t*dr),z),fbm(p+vec2(5.2,1.3)-.04*t*dr,z+7.3));',
     ' return fbm(p+1.8*(1.-.85*rd)*q+vec2(.02*t*dr,0.),z+13.1)*22.*(1.+rd);}',
     'void main(){',
@@ -76,7 +92,7 @@
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   var u = {};
-  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'rd', 'mo', 'dr'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
+  ['r', 't', 'bg', 'ink', 'amt', 'sh', 'sc', 'rd', 'mo', 'dr', 'sd'].forEach(function (k) { u[k] = gl.getUniformLocation(prog, k); });
 
   function rgb(hex) {
     hex = hex.trim().replace('#', '');
@@ -120,6 +136,8 @@
     }
     return false;
   }
+
+  gl.uniform1f(u.sd, Math.random() * 100);
 
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
   var dark = matchMedia('(prefers-color-scheme: dark)');
